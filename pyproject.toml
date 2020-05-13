@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "beans"
+version = "0.1.0"
+description = "gemini for human(bean)s"
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+python-language-server = "^0.31.10"
+ipdb = "^0.13.2"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
