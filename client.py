@@ -1,6 +1,7 @@
 import re
 import socket
 import ssl
+from urllib.parse import urlparse
 
 MAX_RESP_HEADER_BYTES = 2 + 1 + 1024 + 2  # <STATUS><whitespace><META><CR><LF>
 MAX_RESP_BODY_BYTES = 1024 * 1024 * 5
@@ -22,12 +23,14 @@ class Response:
         return f"Response(status={repr(self.status)}, meta={repr(self.meta)})"
 
 
-def get(hostname="gemini.circumlunar.space", path="/", port=1965):
-    assert path.startswith("/"), f"Malformed path: {path}"
+def get(absolute_url="gemini://gemini.circumlunar.space/"):
+    url = parse_absolute_url(absolute_url)
+    port = url.port or 1965
+
     context = ssl.create_default_context()
-    with socket.create_connection((hostname, port)) as sock:
-        with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-            ssock.send(f"gemini://{hostname}{path}\r\n".encode())
+    with socket.create_connection((url.netloc, port)) as sock:
+        with context.wrap_socket(sock, server_hostname=url.netloc) as ssock:
+            ssock.send(f"gemini://{url.netloc}{url.path}\r\n".encode())
             header = ssock.recv(MAX_RESP_HEADER_BYTES).decode()
             status, meta = _parse_resp_header(header)
             resp = Response(status=status, meta=meta)
@@ -44,3 +47,11 @@ def _parse_resp_header(header, pattern=re.compile(r"^(\d\d) (.{,1024})\r\n$")):
     status = match.group(1)
     meta = match.group(2)
     return status, meta
+
+
+def parse_absolute_url(absolute_url):
+    # TODO: this is not exactly safe. Do proper parsing later.
+    assert absolute_url.startswith("gemini://"), f"Malformed url: {absolute_url}"
+    parsed = urlparse(absolute_url)
+    print("Parsed url:", parsed)
+    return parsed
