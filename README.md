@@ -1,5 +1,9 @@
+# WIP
+
 Developed against gemini://gemini.circumlunar.space/ because apparently
 it's the only one if a valid TLS cert.
+
+It currently looks like this: https://junk.imnhan.com/beans.mp4
 
 # Server bugs/surprises
 

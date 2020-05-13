@@ -53,5 +53,4 @@ def parse_absolute_url(absolute_url):
     # TODO: this is not exactly safe. Do proper parsing later.
     assert absolute_url.startswith("gemini://"), f"Malformed url: {absolute_url}"
     parsed = urlparse(absolute_url)
-    print("Parsed url:", parsed)
     return parsed
