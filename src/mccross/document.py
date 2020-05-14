@@ -73,9 +73,3 @@ def parse(text):
             nodes.append(TextNode(line))
 
     return nodes
-
-
-def test():
-    return parse(
-        """# Project Gemini\n\n## Overview\n\nGemini is a new internet protocol which:\n\n* Is heavier than gopher\n* Is lighter than the web\n* Will not replace either\n* Strives for maximum power to weight ratio\n* Takes user privacy very seriously\n\n## Resources\n\n=> docs/\tGemini documentation\n=> software/\tGemini software\n=> servers/\tKnown Gemini servers\n=> gemini://gus.guru/\tGemini Universal Search engine\n=> https://lists.orbitalfox.eu/listinfo/gemini\tGemini mailing list\n=> https://portal.mozz.us/?url=gemini%3A%2F%2Fgemini.circumlunar.space%2F&fmt=fixed\tGemini-to-web proxy service\n=> https://proxy.vulpes.one/gemini/gemini.circumlunar.space\tAnother Gemini-to-web proxy service\n=> gemini://gemini.conman.org/test/torture/\tGemini client torture test\n\n## Geminispace aggregator (experimental!)\n\n=> capcom/\tCAPCOM\n\n## Free Gemini hosting\n\n=> users/\tUsers with Gemini content on this server\n```\nfooo\nbar\n```\nBye.\n"""
-    )

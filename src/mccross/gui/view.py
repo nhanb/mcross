@@ -1,6 +1,7 @@
 import sys
 from tkinter import Text, Tk, font, ttk
 
+from ..document import GeminiNode, LinkNode, PreformattedNode, TextNode
 from .model import Model
 from .widgets import ReadOnlyText
 
@@ -78,8 +79,16 @@ class View:
                 "Times",
             ]
         )
+        mono_font = pick_font(["Ubuntu Mono", "Consolas", "Courier"])
         text.config(
             font=(text_font, 13), bg="#fff8dc", fg="black", padx=5, pady=5,
+        )
+        text.tag_config("link", foreground="blue", underline=1)
+        text.tag_config(
+            "pre",
+            font=(mono_font, 13),
+            # background="#ffe4c4",
+            # selectbackground=text.cget("selectbackground"),
         )
         text.pack(side="left", fill="both", expand=True)
 
@@ -105,6 +114,21 @@ class View:
         if not self.model.gemini_nodes:
             self.text.insert("end", self.model.plaintext)
         else:
-            self.text.insert(
-                "end", "\n".join(str(node) for node in self.model.gemini_nodes)
-            )
+            for node in self.model.gemini_nodes:
+                render_node(node, self.text)
+
+
+def render_node(node: GeminiNode, widget: Text):
+    nodetype = type(node)
+    if nodetype is TextNode:
+        widget.insert("end", node.text + "\n")
+    elif nodetype is LinkNode:
+        widget.insert("end", "=> ")
+        widget.insert("end", f"{node.url}", ("link",))
+        if node.name:
+            widget.insert("end", f" {node.name}")
+        widget.insert("end", "\n")
+    elif nodetype is PreformattedNode:
+        widget.insert("end", f"```\n{node.text}\n```\n", ("pre",))
+    else:
+        widget.insert("end", node.text + "\n")

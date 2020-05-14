@@ -1,14 +1,16 @@
-![do you remember wwww?](https://p.caophim.net/81.webp)
+McCross is a WIP [gemini://](https://gemini.circumlunar.space/) browser
+written in python and tkinter.
 
-McCross is a WIP [gemini://](https://gemini.circumlunar.space/) browser,
-built in loving memory of a simpler, more innocent time.
-
-Developed against gemini://gemini.circumlunar.space/ because apparently
-it's the only one with a valid, CA-approved TLS cert.
+It's developed against gemini://gemini.circumlunar.space/ because apparently
+that's the only server with a valid, CA-approved TLS cert.
 
 It currently looks like this:
 
-![](https://p.caophim.net/82.png)
+![](https://p.caophim.net/84.png)
+
+Happy-path fetching and rendering already works.
+Clicking on links isn't implemented yet though.
+I'm still figuring out stuff as I go.
 
 # Installation
 
