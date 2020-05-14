@@ -1,7 +1,7 @@
 from .. import document
 
 DEMO_TEXT = """\
-# Welcome to McCross Browser
+# Welcome to McRoss Browser
 
 ## List
 
@@ -14,7 +14,7 @@ DEMO_TEXT = """\
 
 ```
 [tool.poetry]
-name = "mccross"
+name = "mcross"
 version = "0.1.0"
 description = "Do you remember www?"
 authors = ["nhanb <hi@imnhan.com>"]

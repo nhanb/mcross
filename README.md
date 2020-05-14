@@ -1,4 +1,4 @@
-McCross is a WIP [gemini://](https://gemini.circumlunar.space/) browser
+McRoss is a WIP [gemini://](https://gemini.circumlunar.space/) browser
 written in python and tkinter.
 
 It's developed against gemini://gemini.circumlunar.space/ because apparently
@@ -15,8 +15,8 @@ I'm still figuring out stuff as I go.
 # Installation
 
 ```sh
-pip install mccross
-mccross
+pip install mcross
+mcross
 ```
 
 # Deps

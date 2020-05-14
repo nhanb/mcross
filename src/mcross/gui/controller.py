@@ -13,7 +13,7 @@ class Controller:
         self.view.go_callback = self.go_callback
 
     def run(self):
-        self.root.title("McCross Browser")
+        self.root.title("McRoss Browser")
         self.root.geometry("800x600")
         self.root.mainloop()
 
