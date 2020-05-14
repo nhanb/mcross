@@ -1,9 +1,15 @@
 [tool.poetry]
-name = "beans"
+name = "mccross"
 version = "0.1.0"
-description = "gemini for human(bean)s"
-authors = ["Your Name <you@example.com>"]
+description = "Do you remember www?"
+authors = ["nhanb <hi@imnhan.com>"]
 license = "MIT"
+packages = [
+    { include = "mccross", from = "src" },
+]
+
+[tool.poetry.scripts]
+mccross = "mccross:run"
 
 [tool.poetry.dependencies]
 python = "^3.7"

@@ -1,8 +1,8 @@
 import sys
 from tkinter import Text, Tk, font, ttk
 
-import client
-from gui_widgets import ReadOnlyText
+from . import client
+from .gui_widgets import ReadOnlyText
 
 
 class Model:
@@ -54,6 +54,7 @@ class View:
         self.address_bar = address_bar
         address_bar.pack(side="left", fill="both", expand=True, padx=3, pady=3)
         address_bar.bind("<Return>", self._on_go)
+        address_bar.bind("<KP_Enter>", self._on_go)
         address_bar.focus_set()
 
         # Go button
@@ -115,7 +116,7 @@ class Controller:
         self.view.go_callback = self.go_callback
 
     def run(self):
-        self.root.title("Beans Browser")
+        self.root.title("McCross Browser")
         self.root.geometry("800x600")
         self.root.mainloop()
 
@@ -139,7 +140,3 @@ class Controller:
 
         print("Received", resp)
         self.view.render_page()
-
-
-c = Controller()
-c.run()

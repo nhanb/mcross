@@ -1,9 +1,21 @@
-# WIP
+![do you remember wwww?](https://p.caophim.net/81.webp)
+
+McCross is a WIP [gemini://](https://gemini.circumlunar.space/) browser,
+built in loving memory of a simpler, more innocent time.
 
 Developed against gemini://gemini.circumlunar.space/ because apparently
-it's the only one if a valid TLS cert.
+it's the only one with a valid, CA-approved TLS cert.
 
-It currently looks like this: https://junk.imnhan.com/beans.mp4
+It currently looks like this:
+
+![](https://p.caophim.net/82.png)
+
+# Installation
+
+```sh
+pip install mccross
+mccross
+```
 
 # Deps
 
@@ -16,10 +28,4 @@ It currently looks like this: https://junk.imnhan.com/beans.mp4
 ## Forces gemini:// in request
 
 Spec says protocol part is optional, but if I omit that one the server will
-respond with `53 No proxying to other hosts!`
-
-```
-<URL> is a UTF-8 encoded absolute URL, of maximum length 1024 bytes.
-If the scheme of the URL is not specified, a scheme of gemini:// is
-implied.
-```
+respond with `53 No proxying to other hosts!`.
