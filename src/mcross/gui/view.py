@@ -15,7 +15,7 @@ def pick_font(names):
             break
 
     if not picked:
-        picked = "TkTextFont"
+        picked = names[-1]
 
     print("Picked font:", picked)
     return picked
@@ -77,9 +77,10 @@ class View:
                 "DejaVu Serif",
                 "Times New Roman",
                 "Times",
+                "TkTextFont",
             ]
         )
-        mono_font = pick_font(["Ubuntu Mono", "Consolas", "Courier"])
+        mono_font = pick_font(["Ubuntu Mono", "Consolas", "Courier", "TkFixedFont"])
         text.config(
             font=(text_font, 13), bg="#fff8dc", fg="black", padx=5, pady=5,
         )
