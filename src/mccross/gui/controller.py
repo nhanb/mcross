@@ -22,18 +22,20 @@ class Controller:
         # TODO url validation
 
         print("Requesting", url)
-
         resp = transport.get(url)
+        print("Received", resp)
+
         if resp.status.startswith("2"):
-            self.model.plaintext = resp.body.decode()
+            self.model.update_content(resp.body.decode())
         else:
-            self.model.plaintext = "\n".join(
-                [
-                    "Error:",
-                    f"{resp.status} {resp.meta}",
-                    resp.body.decode() if resp.body else "",
-                ]
+            self.model.update_content(
+                "\n".join(
+                    [
+                        "Error:",
+                        f"{resp.status} {resp.meta}",
+                        resp.body.decode() if resp.body else "",
+                    ]
+                )
             )
 
-        print("Received", resp)
         self.view.render_page()

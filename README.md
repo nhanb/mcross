@@ -29,3 +29,8 @@ mccross
 
 Spec says protocol part is optional, but if I omit that one the server will
 respond with `53 No proxying to other hosts!`.
+
+## Newline
+
+Spec says a newline should be \r\n but the server running
+gemini.circumlunar.space just uses \n every time.

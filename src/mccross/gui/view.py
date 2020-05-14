@@ -101,4 +101,10 @@ class View:
 
     def render_page(self):
         self.text.delete("1.0", "end")
-        self.text.insert("end", self.model.plaintext)
+
+        if not self.model.gemini_nodes:
+            self.text.insert("end", self.model.plaintext)
+        else:
+            self.text.insert(
+                "end", "\n".join(str(node) for node in self.model.gemini_nodes)
+            )
