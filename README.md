@@ -5,6 +5,12 @@ it's the only one if a valid TLS cert.
 
 It currently looks like this: https://junk.imnhan.com/beans.mp4
 
+# Deps
+
+- python3.7+
+- idlelib (it's supposed to be in the standard lib but Ubuntu for example
+  splits it into a separate package)
+
 # Server bugs/surprises
 
 ## Forces gemini:// in request

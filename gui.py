@@ -1,11 +1,27 @@
 import sys
-from tkinter import Text, Tk, ttk
+from tkinter import Text, Tk, font, ttk
 
 import client
+from gui_widgets import ReadOnlyText
 
 
 class Model:
     plaintext = "Nothing to see here... yet."
+
+
+def pick_font(names):
+    available = font.families()
+    picked = None
+    for name in names:
+        if name in available:
+            picked = name
+            break
+
+    if not picked:
+        picked = "TkTextFont"
+
+    print("Picked font:", picked)
+    return picked
 
 
 class View:
@@ -51,10 +67,28 @@ class View:
         viewport.pack(fill="both", expand=True)
 
         # Viewport content: just do text for now
-        text = Text(viewport)
+        text = ReadOnlyText(viewport)
         self.text = text
         self.render_page()
-        text.pack(fill="both", expand=True)
+        text_font = pick_font(
+            [
+                "Charis SIL",
+                "Source Serif Pro",
+                "Cambria",
+                "Georgia",
+                "DejaVu Serif",
+                "Times New Roman",
+                "Times",
+            ]
+        )
+        text.config(
+            font=(text_font, 13), bg="#fff8dc", fg="black", padx=5, pady=5,
+        )
+        text.pack(side="left", fill="both", expand=True)
+
+        text_scrollbar = ttk.Scrollbar(viewport, command=text.yview)
+        text["yscrollcommand"] = text_scrollbar.set
+        text_scrollbar.pack(side="left", fill="y")
 
         style = ttk.Style()
         if sys.platform == "win32":
@@ -69,10 +103,8 @@ class View:
             self.go_callback("gemini://" + self.address_bar.get())
 
     def render_page(self):
-        self.text.config(state="normal")
         self.text.delete("1.0", "end")
         self.text.insert("end", self.model.plaintext)
-        self.text.config(state="disabled")
 
 
 class Controller:
