@@ -1,4 +1,4 @@
-from .gui import Controller
+from .gui.controller import Controller
 
 
 def run():
