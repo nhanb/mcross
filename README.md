@@ -1,13 +1,16 @@
 McRoss is a WIP [gemini://](https://gemini.circumlunar.space/) browser
-written in python and tkinter.
+written in python and tkinter, meaning it Just Works (tm) on any
+self-respecting desktop OS: Linux, Windows, Mac OS, maaaaybe the BSDs?
+Never tried one of those.
 
 It currently looks like this:
 
 ![](https://p.caophim.net/87.png)
 
-Happy-path surfing and link-visiting already works.
+Happy-path surfing already works.
 The UX is still terrible though (see feature checklist below).
 I'm still figuring out stuff as I go.
+
 
 # Installation
 
@@ -18,6 +21,7 @@ mcross
 
 Better distribution methods to be explored later.
 Maybe it's finally time to try nuitka?
+
 
 # Development
 
@@ -40,29 +44,43 @@ mcross
 poetry publish --build
 ```
 
+
 # Feature checklist
 
 - [x] back-forward buttons
+- [ ] handle redirects
 - [ ] separate I/O thread to avoid blocking GUI
 - [ ] more visual indicators - maybe a status bar at the bottom
 - [x] parse gemini's advanced line types
+- [ ] properly handle mime types (gemini/plaintext/binary)
 - [ ] configurable document styling
 - [ ] configurable TLS to accomodate self-signed sites?
+- [ ] human-friendly distribution
 
 Long term high-level goals:
 
-- Should be easy for end users to install. If the word `rustup` exists in the
-  installation guide for your G U I application then I'm sorry it's not
-  software made for people to _use_.
-- Should be responsive & pleasant to use. The Castor browser doesn't have
-  visual indicators at all, for example, when clicking on a link it just
-  appears to do nothing until the new page is completely loaded.
-- The viewport should be rendered so that its content can be copied and still
-  remain equivalent, valid gemini markup. Abolish the content creator vs
-  consoomer divide!
-- Lightweight, in terms of both disk space & memory/cpu usage. It's completely
-  unoptimized at the moment but tkinter and zero-dependency python gives us a
-  fairly good starting point imo.
+## Easy for end users to install
+
+If the word `rustup` exists in the installation guide for your G U I
+application then I'm sorry it's not software made for people to _use_.
+
+## Copy-friendly viewport
+
+More specifically, its content when copied should still remain equivalent,
+valid gemini markup. Abolish the content creator vs consoomer divide!
+
+## Responsive & pleasant to use
+
+The Castor browser doesn't have visual indicators at all, for example, when
+clicking on a link it just appears to do nothing until the new page is
+completely loaded. That is A Bad Thing (tm).
+
+## Lightweight
+
+In terms of both disk space & memory/cpu usage.
+It's completely unoptimized at the moment but tkinter and zero-dependency
+python gives us a fairly good starting point imo.
+
 
 # Server bugs/surprises
 
