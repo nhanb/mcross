@@ -70,7 +70,7 @@ class View:
         address_bar.focus_set()
 
         # Go button
-        go_btn = ttk.Button(row1, text="go", command=self._on_go)
+        go_btn = ttk.Button(row1, text="三三ᕕ( ᐛ )ᕗ", command=self._on_go, width=10)
         self.go_btn = go_btn
         go_btn.pack(side="left", pady=3)
 
