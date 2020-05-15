@@ -25,7 +25,6 @@ class View:
     model: Model
     address_bar: ttk.Entry
     go_button: ttk.Button
-    viewport: ttk.Frame
     text: Text
 
     go_callback = None
@@ -58,13 +57,8 @@ class View:
         self.go_button = go_button
         go_button.pack(side="left", pady=3)
 
-        # Web viewport
-        viewport = ttk.Frame(row2)
-        self.viewport = viewport
-        viewport.pack(fill="both", expand=True)
-
-        # Viewport content: just do text for now
-        text = ReadOnlyText(viewport)
+        # Main viewport implemented as a Text widget.
+        text = ReadOnlyText(row2)
         self.text = text
         self.render_page()
         text_font = pick_font(
@@ -86,7 +80,10 @@ class View:
             fg="black",
             padx=5,
             pady=5,
-            insertontime=0,  # hide blinking insertion cursor
+            # hide blinking insertion cursor:
+            insertontime=0,
+            # prevent verticle scrollbar from disappearing when window gets small:
+            width=1,
         )
         text.tag_config("link", foreground="brown")
         text.tag_bind("link", "<Enter>", self._on_link_enter)
@@ -95,7 +92,7 @@ class View:
         text.tag_config("pre", font=(mono_font, 13))
         text.pack(side="left", fill="both", expand=True)
 
-        text_scrollbar = ttk.Scrollbar(viewport, command=text.yview)
+        text_scrollbar = ttk.Scrollbar(row2, command=text.yview)
         text["yscrollcommand"] = text_scrollbar.set
         text_scrollbar.pack(side="left", fill="y")
 
