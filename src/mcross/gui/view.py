@@ -1,7 +1,16 @@
 import sys
 from tkinter import Text, Tk, font, ttk
 
-from ..document import GeminiNode, LinkNode, PreformattedNode, TextNode
+from ..document import (
+    GeminiNode,
+    H1Node,
+    H2Node,
+    H3Node,
+    LinkNode,
+    ListItemNode,
+    PreformattedNode,
+    TextNode,
+)
 from .model import Model
 from .widgets import ReadOnlyText
 
@@ -102,12 +111,24 @@ class View:
             # prevent verticle scrollbar from disappearing when window gets small:
             width=1,
         )
+        text.pack(side="left", fill="both", expand=True)
         text.tag_config("link", foreground="brown")
         text.tag_bind("link", "<Enter>", self._on_link_enter)
         text.tag_bind("link", "<Leave>", self._on_link_leave)
         text.tag_bind("link", "<Button-1>", self._on_link_click)
         text.tag_config("pre", font=(mono_font, 13))
-        text.pack(side="left", fill="both", expand=True)
+        text.tag_config("listitem", foreground="#044604")
+
+        base_heading_font = font.Font(font=text["font"])
+        base_heading_font.config(weight="bold")
+        h1_font = font.Font(font=base_heading_font)
+        h1_font.config(size=h1_font["size"] + 8)
+        text.tag_config("h1", font=h1_font)
+        h2_font = font.Font(font=base_heading_font)
+        h2_font.config(size=h2_font["size"] + 4)
+        text.tag_config("h2", font=h2_font)
+        h3_font = font.Font(font=base_heading_font)
+        text.tag_config("h3", font=h3_font)
 
         text_scrollbar = ttk.Scrollbar(row2, command=text.yview)
         text["yscrollcommand"] = text_scrollbar.set
@@ -162,17 +183,26 @@ class View:
 def render_node(node: GeminiNode, widget: Text):
     nodetype = type(node)
     if nodetype is TextNode:
-        widget.insert("end", node.text + "\n")
+        widget.insert("end", node.text)
     elif nodetype is LinkNode:
         widget.insert("end", "=> ")
-        widget.insert("end", f"{node.url}", ("link",))
+        widget.insert("end", node.url, ("link",))
         if node.name:
             widget.insert("end", f" {node.name}")
-        widget.insert("end", "\n")
     elif nodetype is PreformattedNode:
-        widget.insert("end", f"```\n{node.text}\n```\n", ("pre",))
+        widget.insert("end", f"```\n{node.text}\n```", ("pre",))
+    elif nodetype is ListItemNode:
+        widget.insert("end", node.text, ("listitem",))
+    elif nodetype is H1Node:
+        widget.insert("end", node.text, ("h1",))
+    elif nodetype is H2Node:
+        widget.insert("end", node.text, ("h2",))
+    elif nodetype is H3Node:
+        widget.insert("end", node.text, ("h3",))
     else:
-        widget.insert("end", node.text + "\n")
+        widget.insert("end", node.text)
+
+    widget.insert("end", "\n")
 
 
 def get_content_from_tag_click_event(event):

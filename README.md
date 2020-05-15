@@ -3,7 +3,7 @@ written in python and tkinter.
 
 It currently looks like this:
 
-![](https://p.caophim.net/85.png)
+![](https://p.caophim.net/87.png)
 
 Happy-path surfing and link-visiting already works.
 The UX is still terrible though (see feature checklist below).
@@ -45,7 +45,7 @@ poetry publish --build
 - [x] back-forward buttons
 - [ ] separate I/O thread to avoid blocking GUI
 - [ ] more visual indicators - maybe a status bar at the bottom
-- [ ] parse gemini's advanced line types
+- [x] parse gemini's advanced line types
 - [ ] configurable document styling
 - [ ] configurable TLS to accomodate self-signed sites?
 
