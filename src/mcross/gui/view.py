@@ -24,21 +24,38 @@ def pick_font(names):
 class View:
     model: Model
     address_bar: ttk.Entry
-    go_button: ttk.Button
+    go_btn: ttk.Button
+    back_btn: ttk.Button
+    forward_btn: ttk.Button
     text: Text
 
     go_callback = None
+    link_click_callback = None
+    back_callback = None
+    forward_callback = None
 
     def __init__(self, root: Tk, model: Model):
         self.model = model
 
-        # first row - address bar + button
+        # first row - address bar + buttons
         row1 = ttk.Frame(root)
         row1.pack(fill="x")
 
         # second row - web viewport
         row2 = ttk.Frame(root)
         row2.pack(fill="both", expand=True)
+
+        # Back/Forward buttons
+        back_btn = ttk.Button(
+            row1, text="🡄", width=3, command=lambda: self.back_callback()
+        )
+        forward_btn = ttk.Button(
+            row1, text="🡆", width=3, command=lambda: self.forward_callback()
+        )
+        back_btn.pack(side="left", padx=2)
+        forward_btn.pack(side="left", padx=2)
+        self.back_btn = back_btn
+        self.forward_btn = forward_btn
 
         # Address bar prefix
         address_prefix = ttk.Label(row1, text="gemini://")
@@ -53,9 +70,9 @@ class View:
         address_bar.focus_set()
 
         # Go button
-        go_button = ttk.Button(row1, text="go", command=self._on_go)
-        self.go_button = go_button
-        go_button.pack(side="left", pady=3)
+        go_btn = ttk.Button(row1, text="go", command=self._on_go)
+        self.go_btn = go_btn
+        go_btn.pack(side="left", pady=3)
 
         # Main viewport implemented as a Text widget.
         text = ReadOnlyText(row2)
@@ -119,10 +136,19 @@ class View:
         self.link_click_callback(raw_url)
 
     def render_page(self):
+        # Enable/Disable forward/back buttons according to history
+        self.back_btn.config(
+            state="normal" if self.model.history.can_go_back() else "disabled"
+        )
+        self.forward_btn.config(
+            state="normal" if self.model.history.can_go_forward() else "disabled"
+        )
+
         # Update url in address bar
-        if self.model.current_url is not None:
+        current_url = self.model.history.get_current_url()
+        if current_url is not None:
             self.address_bar.delete(0, "end")
-            self.address_bar.insert(0, self.model.current_url.without_protocol())
+            self.address_bar.insert(0, current_url.without_protocol())
 
         # Update viewport
         self.text.delete("1.0", "end")

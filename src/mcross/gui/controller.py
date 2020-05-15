@@ -18,6 +18,8 @@ class Controller:
         self.view = View(self.root, self.model)
         self.view.go_callback = self.go_callback
         self.view.link_click_callback = self.link_click_callback
+        self.view.back_callback = self.back_callback
+        self.view.forward_callback = self.forward_callback
 
     def run(self):
         self.root.title("McRoss Browser")
@@ -33,7 +35,7 @@ class Controller:
     def link_click_callback(self, raw_url):
         # FIXME ugh
         try:
-            url = GeminiUrl.parse(raw_url, self.model.current_url)
+            url = GeminiUrl.parse(raw_url, self.model.history.get_current_url())
             self.visit_link(url)
         except NonAbsoluteUrlWithoutContextError:
             messagebox.showwarning(
@@ -51,6 +53,21 @@ class Controller:
             )
 
     def visit_link(self, url: GeminiUrl):
+        self.load_page(url)
+        self.model.history.visit(url)
+        self.view.render_page()
+
+    def back_callback(self):
+        self.model.history.go_back()
+        self.load_page(self.model.history.get_current_url())
+        self.view.render_page()
+
+    def forward_callback(self):
+        self.model.history.go_forward()
+        self.load_page(self.model.history.get_current_url())
+        self.view.render_page()
+
+    def load_page(self, url: GeminiUrl):
         print("Requesting", url)
         resp = get(url)
         print("Received", resp)
@@ -67,5 +84,3 @@ class Controller:
                     ]
                 )
             )
-        self.model.current_url = url
-        self.view.render_page()

@@ -28,7 +28,7 @@ mcross
 
 # Feature checklist
 
-- [ ] back-forward buttons
+- [x] back-forward buttons
 - [ ] separate I/O thread to avoid blocking GUI
 - [ ] more visual indicators - maybe a status bar at the bottom
 - [ ] parse gemini's advanced line types

@@ -1,4 +1,7 @@
+from typing import List
+
 from .. import document
+from ..transport import GeminiUrl
 
 DEMO_TEXT = """\
 # Welcome to McRoss Browser
@@ -33,12 +36,49 @@ license = "MIT"
 """
 
 
-class Model:
-    current_url = None
-    plaintext = ""
-    gemini_nodes = None
+class History:
+    h: List[GeminiUrl]
+    current_index: int
 
     def __init__(self):
+        self.h = []
+        self.current_index = None
+
+    def visit(self, url: GeminiUrl):
+        # remove forward history first:
+        if self.current_index is not None:
+            self.h = self.h[: self.current_index + 1]
+        self.h.append(url)
+        self.current_index = len(self.h) - 1
+
+    def go_back(self):
+        if self.can_go_back():
+            self.current_index -= 1
+
+    def go_forward(self):
+        if self.can_go_forward():
+            self.current_index += 1
+
+    def can_go_back(self):
+        return self.current_index not in [None, 0]
+
+    def can_go_forward(self):
+        return self.current_index is not None and self.current_index < len(self.h) - 1
+
+    def get_current_url(self):
+        try:
+            return self.h[self.current_index]
+        except (IndexError, TypeError):
+            return None
+
+
+class Model:
+    plaintext = ""
+    gemini_nodes = None
+    history: History
+
+    def __init__(self):
+        self.history = History()
         self.update_content(DEMO_TEXT)
 
     def update_content(self, plaintext):
