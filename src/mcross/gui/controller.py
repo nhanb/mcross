@@ -1,6 +1,12 @@
-from tkinter import Tk
+from ssl import SSLCertVerificationError
+from tkinter import Tk, messagebox
 
-from .. import transport
+from ..transport import (
+    GeminiUrl,
+    NonAbsoluteUrlWithoutContextError,
+    UnsupportedProtocolError,
+    get,
+)
 from .model import Model
 from .view import View
 
@@ -11,6 +17,7 @@ class Controller:
         self.model = Model()
         self.view = View(self.root, self.model)
         self.view.go_callback = self.go_callback
+        self.view.link_click_callback = self.link_click_callback
 
     def run(self):
         self.root.title("McRoss Browser")
@@ -19,10 +26,33 @@ class Controller:
 
     def go_callback(self, url: str):
         # TODO more visual indications
-        # TODO url validation
 
+        url = GeminiUrl.parse_absolute_url(url)
+        self.visit_link(url)
+
+    def link_click_callback(self, raw_url):
+        # FIXME ugh
+        try:
+            url = GeminiUrl.parse(raw_url, self.model.current_url)
+            self.visit_link(url)
+        except NonAbsoluteUrlWithoutContextError:
+            messagebox.showwarning(
+                "Ambiguous link",
+                "Cannot visit relative urls without a current_url context",
+            )
+        except UnsupportedProtocolError as e:
+            messagebox.showinfo(
+                "Unsupported protocol", f"{e} links are unsupported (yet?)"
+            )
+        except SSLCertVerificationError:
+            messagebox.showerror(
+                "Invalid server certificate",
+                "Server is NOT using a valid CA-approved TLS certificate.",
+            )
+
+    def visit_link(self, url: GeminiUrl):
         print("Requesting", url)
-        resp = transport.get(url)
+        resp = get(url)
         print("Received", resp)
 
         if resp.status.startswith("2"):
@@ -37,5 +67,5 @@ class Controller:
                     ]
                 )
             )
-
+        self.model.current_url = url
         self.view.render_page()

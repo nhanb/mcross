@@ -47,7 +47,6 @@ class View:
 
         # Address bar
         address_bar = ttk.Entry(row1)
-        address_bar.insert(0, "gemini.circumlunar.space/")
         self.address_bar = address_bar
         address_bar.pack(side="left", fill="both", expand=True, padx=3, pady=3)
         address_bar.bind("<Return>", self._on_go)
@@ -82,15 +81,18 @@ class View:
         )
         mono_font = pick_font(["Ubuntu Mono", "Consolas", "Courier", "TkFixedFont"])
         text.config(
-            font=(text_font, 13), bg="#fff8dc", fg="black", padx=5, pady=5,
+            font=(text_font, 13),
+            bg="#fff8dc",
+            fg="black",
+            padx=5,
+            pady=5,
+            insertontime=0,  # hide blinking insertion cursor
         )
-        text.tag_config("link", foreground="blue", underline=1)
-        text.tag_config(
-            "pre",
-            font=(mono_font, 13),
-            # background="#ffe4c4",
-            # selectbackground=text.cget("selectbackground"),
-        )
+        text.tag_config("link", foreground="brown")
+        text.tag_bind("link", "<Enter>", self._on_link_enter)
+        text.tag_bind("link", "<Leave>", self._on_link_leave)
+        text.tag_bind("link", "<Button-1>", self._on_link_click)
+        text.tag_config("pre", font=(mono_font, 13))
         text.pack(side="left", fill="both", expand=True)
 
         text_scrollbar = ttk.Scrollbar(viewport, command=text.yview)
@@ -109,9 +111,24 @@ class View:
         if self.go_callback is not None:
             self.go_callback("gemini://" + self.address_bar.get())
 
-    def render_page(self):
-        self.text.delete("1.0", "end")
+    def _on_link_enter(self, ev):
+        self.text.config(cursor="hand1")
 
+    def _on_link_leave(self, ev):
+        self.text.config(cursor="xterm")
+
+    def _on_link_click(self, ev):
+        raw_url = get_content_from_tag_click_event(ev)
+        self.link_click_callback(raw_url)
+
+    def render_page(self):
+        # Update url in address bar
+        if self.model.current_url is not None:
+            self.address_bar.delete(0, "end")
+            self.address_bar.insert(0, self.model.current_url.without_protocol())
+
+        # Update viewport
+        self.text.delete("1.0", "end")
         if not self.model.gemini_nodes:
             self.text.insert("end", self.model.plaintext)
         else:
@@ -133,3 +150,20 @@ def render_node(node: GeminiNode, widget: Text):
         widget.insert("end", f"```\n{node.text}\n```\n", ("pre",))
     else:
         widget.insert("end", node.text + "\n")
+
+
+def get_content_from_tag_click_event(event):
+    # get the index of the mouse click
+    index = event.widget.index("@%s,%s" % (event.x, event.y))
+
+    # get the indices of all "link" tags
+    tag_indices = list(event.widget.tag_ranges("link"))
+
+    # iterate them pairwise (start and end index)
+    for start, end in zip(tag_indices[0::2], tag_indices[1::2]):
+        # check if the tag matches the mouse click index
+        if event.widget.compare(start, "<=", index) and event.widget.compare(
+            index, "<", end
+        ):
+            # return string between tag start and end
+            return event.widget.get(start, end)

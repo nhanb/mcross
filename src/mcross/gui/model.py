@@ -10,6 +10,16 @@ DEMO_TEXT = """\
 * おぼえていますか　手と手触れ会った時
 * Do you remember? The time when our hands first touched?
 
+## Links
+
+=> gemini://gemini.circumlunar.space/	Gemini homepage
+=> gemini://gus.guru/     Gemini Universal Search engine
+=> gemini://gemini.conman.org/test/torture/ 	Gemini client torture test
+
+=> relative/ Relative link
+=> /relative/ Relative link starting with "/"
+=> https://lists.orbitalfox.eu/listinfo/gemini?foo=bar HTTP link
+
 ## Codes
 
 ```
@@ -20,21 +30,11 @@ description = "Do you remember www?"
 authors = ["nhanb <hi@imnhan.com>"]
 license = "MIT"
 ```
-
-## Links
-
-=> gemini.circumlunar.space/docs/	Gemini documentation
-=> gemini://gemini.circumlunar.space/software/ Gemini software
-=> gemini.circumlunar.space/servers/     Known Gemini servers
-=> gemini://gus.guru/	Gemini Universal Search engine
-=> https://lists.orbitalfox.eu/listinfo/gemini	Gemini mailing list
-=> https://portal.mozz.us/?url=gemini%3A%2F%2Fgemini.circumlunar.space%2F&fmt=fixed	Gemini-to-web proxy service
-=> https://proxy.vulpes.one/gemini/gemini.circumlunar.space	Another Gemini-to-web proxy service
-=> gemini://gemini.conman.org/test/torture/	Gemini client torture test
 """
 
 
 class Model:
+    current_url = None
     plaintext = ""
     gemini_nodes = None
 
