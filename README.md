@@ -8,8 +8,9 @@ It currently looks like this:
 
 ![](https://p.caophim.net/84.png)
 
-Happy-path fetching and rendering already works.
-Clicking on links isn't implemented yet though.
+Happy-path surfing and link-visiting already works.
+The UX is still terrible though (no back-forward buttons, UI-blocking network
+requests, etc.).
 I'm still figuring out stuff as I go.
 
 # Installation
@@ -24,6 +25,15 @@ mcross
 - python3.7+
 - idlelib (it's supposed to be in the standard lib but Ubuntu for example
   splits it into a separate package)
+
+# Feature checklist
+
+- [ ] back-forward buttons
+- [ ] separate I/O thread to avoid blocking GUI
+- [ ] more visual indicators - maybe a status bar at the bottom
+- [ ] parse gemini's advanced line types
+- [ ] configurable document styling
+- [ ] configurable TLS
 
 # Server bugs/surprises
 
