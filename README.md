@@ -6,11 +6,10 @@ that's the only server with a valid, CA-approved TLS cert.
 
 It currently looks like this:
 
-![](https://p.caophim.net/84.png)
+![](https://p.caophim.net/85.png)
 
 Happy-path surfing and link-visiting already works.
-The UX is still terrible though (no back-forward buttons, UI-blocking network
-requests, etc.).
+The UX is still terrible though (see feature checklist below).
 I'm still figuring out stuff as I go.
 
 # Installation
