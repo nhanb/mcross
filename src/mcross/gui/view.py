@@ -14,6 +14,17 @@ from ..document import (
 from .model import Model
 from .widgets import ReadOnlyText
 
+# OS-specific values
+if sys.platform == "win32":
+    TTK_THEME = "vista"
+    POINTER_CURSOR = "center_ptr"
+elif sys.platform == "darwin":
+    TTK_THEME = "aqua"
+    POINTER_CURSOR = "pointinghand"
+else:
+    TTK_THEME = "clam"
+    POINTER_CURSOR = "hand1"
+
 
 def pick_font(names):
     available = font.families()
@@ -135,19 +146,14 @@ class View:
         text_scrollbar.pack(side="left", fill="y")
 
         style = ttk.Style()
-        if sys.platform == "win32":
-            style.theme_use("vista")
-        elif sys.platform == "darwin":
-            style.theme_use("aqua")
-        else:
-            style.theme_use("clam")
+        style.theme_use(TTK_THEME)
 
     def _on_go(self, ev=None):
         if self.go_callback is not None:
             self.go_callback("gemini://" + self.address_bar.get())
 
     def _on_link_enter(self, ev):
-        self.text.config(cursor="hand1")
+        self.text.config(cursor=POINTER_CURSOR)
 
     def _on_link_leave(self, ev):
         self.text.config(cursor="xterm")
