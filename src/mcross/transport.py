@@ -33,12 +33,6 @@ def _parse_resp_header(header, pattern=re.compile(r"^(\d\d)\s+(.{,1024})\r\n$"))
     return status, meta
 
 
-def parse_absolute_url(absolute_url):
-    assert absolute_url.startswith("gemini://"), f"Malformed url: {absolute_url}"
-    parsed = urlparse(absolute_url)
-    return parsed
-
-
 # TODO: GeminiUrl's context-aware parse() method probably doesn't belong
 # in a "transport" module.
 
