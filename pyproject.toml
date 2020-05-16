@@ -13,6 +13,7 @@ mcross = "mcross:run"
 
 [tool.poetry.dependencies]
 python = "^3.7"
+curio = "^1.2"
 
 [tool.poetry.dev-dependencies]
 python-language-server = "^0.31.10"

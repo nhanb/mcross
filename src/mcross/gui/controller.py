@@ -1,5 +1,7 @@
 from ssl import SSLCertVerificationError
-from tkinter import Tk, messagebox
+from tkinter import TclError, Tk, messagebox
+
+import curio
 
 from ..transport import (
     GeminiUrl,
@@ -16,27 +18,54 @@ class Controller:
         self.root = Tk()
         self.model = Model()
         self.view = View(self.root, self.model)
-        self.view.go_callback = self.go_callback
-        self.view.link_click_callback = self.link_click_callback
-        self.view.back_callback = self.back_callback
-        self.view.forward_callback = self.forward_callback
-
-    def run(self):
         self.root.title("McRoss Browser")
         self.root.geometry("800x600")
-        self.root.mainloop()
 
-    def go_callback(self, url: str):
+        # Coroutine magic follows:
+
+        self.pending_coros = []
+
+        def schedule_as_coro(func):
+            return lambda *args: self.pending_coros.append(curio.spawn(func, *args))
+
+        self.view.go_callback = schedule_as_coro(self.go_callback)
+        self.view.link_click_callback = schedule_as_coro(self.link_click_callback)
+        self.view.back_callback = schedule_as_coro(self.back_callback)
+        self.view.forward_callback = schedule_as_coro(self.forward_callback)
+
+    def run(self):
+        # Instead of running tkinter's root.mainloop() directly,
+        # we rely on curio's event loop instead.
+        # The main() coroutine does these things in an infinite loop:
+        #   - do tk's necessary GUI with root.update()
+        #   - run pending coroutines if there's any. This is used to run callbacks
+        #     triggered by the view.
+        #   - sleep a little so we don't loop root.update() too quickly.
+        async def main():
+            try:
+                while True:
+                    self.root.update()
+                    for coroutine in self.pending_coros:
+                        await coroutine
+                    self.pending_coros = []
+                    await curio.sleep(0.05)
+            except TclError as e:
+                if "application has been destroyed" not in str(e):
+                    raise
+
+        curio.run(main)
+
+    async def go_callback(self, url: str):
         # TODO more visual indications
 
         url = GeminiUrl.parse_absolute_url(url)
-        self.visit_link(url)
+        await self.visit_link(url)
 
-    def link_click_callback(self, raw_url):
+    async def link_click_callback(self, raw_url):
         # FIXME ugh
         try:
             url = GeminiUrl.parse(raw_url, self.model.history.get_current_url())
-            self.visit_link(url)
+            await self.visit_link(url)
         except NonAbsoluteUrlWithoutContextError:
             messagebox.showwarning(
                 "Ambiguous link",
@@ -52,24 +81,24 @@ class Controller:
                 "Server is NOT using a valid CA-approved TLS certificate.",
             )
 
-    def visit_link(self, url: GeminiUrl):
-        resp = self.load_page(url)
+    async def visit_link(self, url: GeminiUrl):
+        resp = await self.load_page(url)
         self.model.history.visit(resp.url)
         self.view.render_page()
 
-    def back_callback(self):
+    async def back_callback(self):
         self.model.history.go_back()
-        self.load_page(self.model.history.get_current_url())
+        await self.load_page(self.model.history.get_current_url())
         self.view.render_page()
 
-    def forward_callback(self):
+    async def forward_callback(self):
         self.model.history.go_forward()
-        self.load_page(self.model.history.get_current_url())
+        await self.load_page(self.model.history.get_current_url())
         self.view.render_page()
 
-    def load_page(self, url: GeminiUrl):
+    async def load_page(self, url: GeminiUrl):
         print("Requesting", url)
-        resp = get(url)
+        resp = await get(url)
         print("Received", resp)
 
         if resp.status.startswith("2"):

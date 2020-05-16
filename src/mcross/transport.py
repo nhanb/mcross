@@ -1,7 +1,7 @@
 import re
-import socket
-import ssl
 from urllib.parse import urlparse
+
+import curio
 
 MAX_RESP_HEADER_BYTES = 2 + 1 + 1024 + 2  # <STATUS><whitespace><META><CR><LF>
 MAX_RESP_BODY_BYTES = 1024 * 1024 * 5
@@ -102,32 +102,33 @@ class GeminiUrl:
         return GeminiUrl(parsed.hostname, parsed.port or 1965, parsed.path)
 
 
-def raw_get(url: GeminiUrl):
-    context = ssl.create_default_context()
-    with socket.create_connection((url.host, url.port)) as sock:
-        with context.wrap_socket(sock, server_hostname=url.host) as ssock:
-            ssock.send(f"gemini://{url.host}{url.path}\r\n".encode())
-            header = ssock.recv(MAX_RESP_HEADER_BYTES).decode()
-            status, meta = _parse_resp_header(header)
-            resp = Response(status=status, meta=meta, url=url)
+async def raw_get(url: GeminiUrl):
+    sock = await curio.open_connection(
+        url.host, url.port, ssl=True, server_hostname=url.host
+    )
+    async with sock:
+        await sock.sendall(f"gemini://{url.host}{url.path}\r\n".encode())
+        header = (await sock.recv(MAX_RESP_HEADER_BYTES)).decode()
+        status, meta = _parse_resp_header(header)
+        resp = Response(status=status, meta=meta, url=url)
 
-            if status.startswith("2"):
-                body = b""
-                msg = ssock.recv(4096)
+        if status.startswith("2"):
+            body = b""
+            msg = await sock.recv(4096)
+            body += msg
+            while msg and len(body) <= MAX_RESP_BODY_BYTES:
+                msg = await sock.recv(4096)
                 body += msg
-                while msg and len(body) <= MAX_RESP_BODY_BYTES:
-                    msg = ssock.recv(4096)
-                    body += msg
-                resp.body = body
+            resp.body = body
 
-            return resp
+        return resp
 
 
-def get(url: GeminiUrl, redirect_count=0):
-    resp = raw_get(url)
+async def get(url: GeminiUrl, redirect_count=0):
+    resp = await raw_get(url)
     if resp.status.startswith("3") and redirect_count < MAX_REDIRECTS:
         redirect_count += 1
         new_url = GeminiUrl.parse_absolute_url(resp.meta)
         print(f"Redirecting to {new_url}, count={redirect_count}")
-        return get(new_url, redirect_count)
+        return await get(new_url, redirect_count)
     return resp

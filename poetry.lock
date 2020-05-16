@@ -26,6 +26,17 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "0.4.3"
 
 [[package]]
+category = "main"
+description = "Curio"
+name = "curio"
+optional = false
+python-versions = ">= 3.6"
+version = "1.2"
+
+[package.extras]
+test = ["pytest", "sphinx"]
+
+[[package]]
 category = "dev"
 description = "Decorators for Humans"
 marker = "python_version >= \"3.4\""
@@ -298,7 +309,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "aa819a24de25e1f54368130e31d3524825aea37a1de2632a1eabd6cb6bafaa42"
+content-hash = "6aa72780c0ec9d3ed80370f35c09d1b1915c49675ab97732c49e2af47c5aa08f"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -313,6 +324,9 @@ backcall = [
 colorama = [
     {file = "colorama-0.4.3-py2.py3-none-any.whl", hash = "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff"},
     {file = "colorama-0.4.3.tar.gz", hash = "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"},
+]
+curio = [
+    {file = "curio-1.2.tar.gz", hash = "sha256:90f320fafb3f5b791f25ffafa7b561cc980376de173afd575a2114380de7939b"},
 ]
 decorator = [
     {file = "decorator-4.4.2-py2.py3-none-any.whl", hash = "sha256:41fa54c2a0cc4ba648be4fd43cff00aedf5b9465c9bf18d64325bc225f08f760"},
