@@ -118,7 +118,13 @@ def raw_get(url: GeminiUrl):
             resp = Response(status=status, meta=meta, url=url)
 
             if status.startswith("2"):
-                resp.body = ssock.recv(MAX_RESP_BODY_BYTES)
+                body = b""
+                msg = ssock.recv(4096)
+                body += msg
+                while msg and len(body) <= MAX_RESP_BODY_BYTES:
+                    msg = ssock.recv(4096)
+                    body += msg
+                resp.body = body
 
             return resp
 
