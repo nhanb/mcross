@@ -64,10 +64,11 @@ Long term high-level goals:
 If the word `rustup` exists in the installation guide for your G U I
 application then I'm sorry it's not software made for people to _use_.
 
-## Copy-friendly viewport
+## What-you-see-is-what-you-write
 
-More specifically, its content when copied should still remain equivalent,
-valid gemini markup. Abolish the content creator vs consoomer divide!
+A rendered text/gemini viewport should preserve its original text content.
+This way once you've read a gemini page on the browser, you already know how to
+write one. No "View Source" necessary.
 
 ## Responsive & pleasant to use
 
