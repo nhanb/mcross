@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 
 MAX_RESP_HEADER_BYTES = 2 + 1 + 1024 + 2  # <STATUS><whitespace><META><CR><LF>
 MAX_RESP_BODY_BYTES = 1024 * 1024 * 5
+MAX_REDIRECTS = 3
 
 
 # Wanted to use a dataclass here but ofc it doesn't allow a slotted class to
@@ -12,12 +13,13 @@ MAX_RESP_BODY_BYTES = 1024 * 1024 * 5
 # https://stackoverflow.com/questions/50180735/how-can-dataclasses-be-made-to-work-better-with-slots
 # Maaaaybe I should just use attrs and call it a day.
 class Response:
-    __slots__ = ("status", "meta", "body")
+    __slots__ = ("status", "meta", "body", "url")
 
-    def __init__(self, status: str, meta: str, body: bytes = None):
+    def __init__(self, status: str, meta: str, url, body: bytes = None):
         self.status = status
         self.meta = meta
         self.body = body
+        self.url = url
 
     def __repr__(self):
         return f"Response(status={repr(self.status)}, meta={repr(self.meta)})"
@@ -106,16 +108,26 @@ class GeminiUrl:
         return GeminiUrl(parsed.hostname, parsed.port or 1965, parsed.path)
 
 
-def get(url: GeminiUrl):
+def raw_get(url: GeminiUrl):
     context = ssl.create_default_context()
     with socket.create_connection((url.host, url.port)) as sock:
         with context.wrap_socket(sock, server_hostname=url.host) as ssock:
             ssock.send(f"gemini://{url.host}{url.path}\r\n".encode())
             header = ssock.recv(MAX_RESP_HEADER_BYTES).decode()
             status, meta = _parse_resp_header(header)
-            resp = Response(status=status, meta=meta)
+            resp = Response(status=status, meta=meta, url=url)
 
             if status.startswith("2"):
                 resp.body = ssock.recv(MAX_RESP_BODY_BYTES)
 
             return resp
+
+
+def get(url: GeminiUrl, redirect_count=0):
+    resp = raw_get(url)
+    if resp.status.startswith("3") and redirect_count < MAX_REDIRECTS:
+        redirect_count += 1
+        new_url = GeminiUrl.parse_absolute_url(resp.meta)
+        print(f"Redirecting to {new_url}, count={redirect_count}")
+        return get(new_url, redirect_count)
+    return resp

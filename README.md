@@ -48,7 +48,7 @@ poetry publish --build
 # Feature checklist
 
 - [x] back-forward buttons
-- [ ] handle redirects
+- [x] handle redirects
 - [ ] separate I/O thread to avoid blocking GUI
 - [ ] more visual indicators - maybe a status bar at the bottom
 - [x] parse gemini's advanced line types
@@ -61,7 +61,7 @@ Long term high-level goals:
 
 ## Easy for end users to install
 
-If the word `rustup` exists in the installation guide for your G U I
+If the words `cargo build` exists in the installation guide for your G U I
 application then I'm sorry it's not software made for people to _use_.
 
 ## What-you-see-is-what-you-write

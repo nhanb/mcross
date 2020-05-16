@@ -53,8 +53,8 @@ class Controller:
             )
 
     def visit_link(self, url: GeminiUrl):
-        self.load_page(url)
-        self.model.history.visit(url)
+        resp = self.load_page(url)
+        self.model.history.visit(resp.url)
         self.view.render_page()
 
     def back_callback(self):
@@ -84,3 +84,4 @@ class Controller:
                     ]
                 )
             )
+        return resp
