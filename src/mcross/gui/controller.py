@@ -58,7 +58,14 @@ class Controller:
                     for coroutine in self.pending_coros:
                         await coroutine
                     self.pending_coros = []
-                    await curio.sleep(0.05)  # 50ms
+                    await curio.sleep(0.016)
+                    # 16ms = 1/60 - we're targeting around 60fps
+                    # Yes it's wasteful to call root.update() that fast.
+                    # In practice CPU usage idles around 4% on my i5 but hey it's not
+                    # spinning up my laptop fans yet.
+                    # Doesn't seem like there's a better way atm. The alternative
+                    # described at [1] is multithreading which I'm not a fan of.
+                    # [1] https://github.com/dabeaz/curio/issues/111
             except TclError as e:
                 if "application has been destroyed" not in str(e):
                     raise

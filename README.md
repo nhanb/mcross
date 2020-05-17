@@ -81,8 +81,11 @@ completely loaded. That is A Bad Thing (tm).
 ## Lightweight
 
 In terms of both disk space & memory/cpu usage.
-It's completely unoptimized at the moment but tkinter and zero-dependency
-python gives us a fairly good starting point imo.
+It's completely unoptimized at the moment.
+Actually the way I'm hooking up tkinter and curio is... not ideal. See comments
+in controller.py for more info. TL;DR I'm prioritizing gui responsiveness and
+code simplicity, sacrificing a non-negligible amount of CPU cycles even at
+idle.
 
 
 # Server bugs/surprises
