@@ -28,7 +28,9 @@ class Controller:
 
         def schedule_as_coro(func):
             def do_schedule(*args):
-                task = curio.spawn(self.show_waiting_cursor_during_task(func, *args))
+                task = curio.spawn(
+                    self.show_waiting_cursor_during_task(func, *args), daemon=True
+                )
                 self.pending_coros.append(task)
 
             return do_schedule
