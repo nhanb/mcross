@@ -1,3 +1,4 @@
+import traceback
 from ssl import SSLCertVerificationError
 from tkinter import TclError, Tk, messagebox
 
@@ -10,7 +11,7 @@ from ..transport import (
     get,
 )
 from .model import Model
-from .view import View
+from .view import WAITING_CURSOR, View
 
 
 class Controller:
@@ -26,7 +27,11 @@ class Controller:
         self.pending_coros = []
 
         def schedule_as_coro(func):
-            return lambda *args: self.pending_coros.append(curio.spawn(func, *args))
+            def do_schedule(*args):
+                task = curio.spawn(self.show_waiting_cursor_during_task(func, *args))
+                self.pending_coros.append(task)
+
+            return do_schedule
 
         self.view.go_callback = schedule_as_coro(self.go_callback)
         self.view.link_click_callback = schedule_as_coro(self.link_click_callback)
@@ -48,21 +53,34 @@ class Controller:
                     for coroutine in self.pending_coros:
                         await coroutine
                     self.pending_coros = []
-                    await curio.sleep(0.05)
+                    await curio.sleep(0.05)  # 50ms
             except TclError as e:
                 if "application has been destroyed" not in str(e):
                     raise
 
         curio.run(main)
 
-    async def go_callback(self, url: str):
-        # TODO more visual indications
+    async def show_waiting_cursor_during_task(self, func, *args):
+        self.view.text.config(cursor=WAITING_CURSOR)
+        self.root.config(cursor=WAITING_CURSOR)
+        self.view.allow_changing_cursor = False
 
+        try:
+            await func(*args)
+        except Exception:
+            # a catch-all here so that our show_waiting...() coroutine can be yielded
+            traceback.print_exc()
+
+        # reset cursor to default values
+        self.view.text.config(cursor="xterm")
+        self.root.config(cursor="arrow")
+        self.view.allow_changing_cursor = True
+
+    async def go_callback(self, url: str):
         url = GeminiUrl.parse_absolute_url(url)
         await self.visit_link(url)
 
     async def link_click_callback(self, raw_url):
-        # FIXME ugh
         try:
             url = GeminiUrl.parse(raw_url, self.model.history.get_current_url())
             await self.visit_link(url)
@@ -97,9 +115,9 @@ class Controller:
         self.view.render_page()
 
     async def load_page(self, url: GeminiUrl):
-        print("Requesting", url)
+        # print("Requesting", url)
         resp = await get(url)
-        print("Received", resp)
+        # print("Received", resp)
 
         if resp.status.startswith("2"):
             self.model.update_content(resp.body.decode())

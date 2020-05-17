@@ -18,12 +18,15 @@ from .widgets import ReadOnlyText
 if sys.platform == "win32":
     TTK_THEME = "vista"
     POINTER_CURSOR = "center_ptr"
+    WAITING_CURSOR = "wait"
 elif sys.platform == "darwin":
     TTK_THEME = "aqua"
     POINTER_CURSOR = "pointinghand"
+    WAITING_CURSOR = "wait"
 else:
     TTK_THEME = "clam"
     POINTER_CURSOR = "hand1"
+    WAITING_CURSOR = "watch"
 
 
 def pick_font(names):
@@ -48,6 +51,8 @@ class View:
     back_btn: ttk.Button
     forward_btn: ttk.Button
     text: Text
+
+    allow_changing_cursor = True
 
     go_callback = None
     link_click_callback = None
@@ -153,10 +158,12 @@ class View:
             self.go_callback("gemini://" + self.address_bar.get())
 
     def _on_link_enter(self, ev):
-        self.text.config(cursor=POINTER_CURSOR)
+        if self.allow_changing_cursor:
+            self.text.config(cursor=POINTER_CURSOR)
 
     def _on_link_leave(self, ev):
-        self.text.config(cursor="xterm")
+        if self.allow_changing_cursor:
+            self.text.config(cursor="xterm")
 
     def _on_link_click(self, ev):
         raw_url = get_content_from_tag_click_event(ev)
