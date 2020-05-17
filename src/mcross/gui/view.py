@@ -13,7 +13,7 @@ from ..document import (
     TextNode,
 )
 from .model import Model
-from .widgets import ReadOnlyText
+from .widgets import McEntry, ReadOnlyText
 
 # OS-specific values
 if sys.platform == "win32":
@@ -106,7 +106,7 @@ class View:
         address_prefix.pack(side="left")
 
         # Address bar
-        address_bar = ttk.Entry(row1)
+        address_bar = McEntry(row1)
         self.address_bar = address_bar
         address_bar.pack(side="left", fill="both", expand=True, padx=3, pady=3)
         address_bar.bind("<Return>", self._on_go)
@@ -211,6 +211,8 @@ class View:
         else:
             for node in self.model.gemini_nodes:
                 render_node(node, self.text)
+            # delete final trailing newline:
+            self.text.delete("insert-1c", "insert")
 
 
 def render_node(node: GeminiNode, widget: Text):

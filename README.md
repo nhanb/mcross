@@ -1,11 +1,13 @@
-McRoss is a WIP [gemini://](https://gemini.circumlunar.space/) browser
-written in python and tkinter, meaning it Just Works (tm) on any
-self-respecting desktop OS: Linux, Windows, Mac OS, maaaaybe the BSDs?
+McRoss is a minimal and usable [gemini://](https://gemini.circumlunar.space/)
+browser written in python and tkinter, meaning it Just Works (tm) on any
+self-respecting desktop OS: Linux, Windows, Mac OS, and maybe the BSDs?
 Never tried one of those.
 
 It currently looks like this:
 
-![](https://p.caophim.net/87.png)
+![](https://junk.imnhan.com/mcross.png)
+
+Or check out the demo video: https://junk.imnhan.com/mcross.mp4
 
 Surfing plaintext and gemini content is already working well.
 See feature checklist below for more details.
@@ -29,6 +31,7 @@ Deps:
 - python3.7+
 - idlelib (it's supposed to be in the standard lib but Ubuntu for example
   splits it into a separate package)
+- curio - for async I/O so that it doesn't block the UI.
 
 To get started:
 
