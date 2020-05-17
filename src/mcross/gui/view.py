@@ -91,10 +91,10 @@ class View:
 
         # Back/Forward buttons
         back_btn = ttk.Button(
-            row1, text="🡄", width=3, command=lambda: self.back_callback()
+            row1, text="◀", width=3, command=lambda: self.back_callback()
         )
         forward_btn = ttk.Button(
-            row1, text="🡆", width=3, command=lambda: self.forward_callback()
+            row1, text="▶", width=3, command=lambda: self.forward_callback()
         )
         back_btn.pack(side="left", padx=2)
         forward_btn.pack(side="left", padx=2)
