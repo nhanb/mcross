@@ -7,9 +7,8 @@ It currently looks like this:
 
 ![](https://p.caophim.net/87.png)
 
-Happy-path surfing already works.
-The UX is still terrible though (see feature checklist below).
-I'm still figuring out stuff as I go.
+Surfing plaintext and gemini content is already working well.
+See feature checklist below for more details.
 
 
 # Installation
@@ -50,7 +49,7 @@ poetry publish --build
 - [x] back-forward buttons
 - [x] handle redirects
 - [x] non-blocking I/O using curio
-- [ ] more visual indicators - maybe a status bar at the bottom
+- [x] more visual indicators: waiting cursor, status bar
 - [x] parse gemini's advanced line types
 - [ ] properly handle mime types (gemini/plaintext/binary)
 - [ ] configurable document styling

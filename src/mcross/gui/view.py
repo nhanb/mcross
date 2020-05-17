@@ -1,3 +1,4 @@
+import logging
 import sys
 from tkinter import Text, Tk, font, ttk
 
@@ -44,6 +45,16 @@ def pick_font(names):
     return picked
 
 
+def register_status_bar_log_handler(status_bar: ttk.Label):
+    class StatusBarHandler(logging.Handler):
+        def emit(self, record):
+            status_bar.config(text=self.format(record))
+
+    logger = logging.getLogger("statusbar")
+    logger.setLevel(logging.INFO)
+    logger.addHandler(StatusBarHandler())
+
+
 class View:
     model: Model
     address_bar: ttk.Entry
@@ -51,6 +62,7 @@ class View:
     back_btn: ttk.Button
     forward_btn: ttk.Button
     text: Text
+    status_bar: ttk.Label
 
     allow_changing_cursor = True
 
@@ -69,6 +81,13 @@ class View:
         # second row - web viewport
         row2 = ttk.Frame(root)
         row2.pack(fill="both", expand=True)
+
+        # third row - status bar
+        status_bar = ttk.Label(root)
+        self.status_bar = status_bar
+        status_bar.config(justify="right")
+        status_bar.pack(fill="x")
+        register_status_bar_log_handler(status_bar)
 
         # Back/Forward buttons
         back_btn = ttk.Button(
@@ -124,8 +143,9 @@ class View:
             pady=5,
             # hide blinking insertion cursor:
             insertontime=0,
-            # prevent verticle scrollbar from disappearing when window gets small:
+            # prevent text widget from pushing scrollbar/status bar out of the window:
             width=1,
+            height=1,
         )
         text.pack(side="left", fill="both", expand=True)
         text.tag_config("link", foreground="brown")

@@ -1,3 +1,4 @@
+import logging
 import traceback
 from ssl import SSLCertVerificationError
 from tkinter import TclError, Tk, messagebox
@@ -12,6 +13,8 @@ from ..transport import (
 )
 from .model import Model
 from .view import WAITING_CURSOR, View
+
+statusbar_logger = logging.getLogger("statusbar")
 
 
 class Controller:
@@ -102,9 +105,13 @@ class Controller:
             )
 
     async def visit_link(self, url: GeminiUrl):
-        resp = await self.load_page(url)
-        self.model.history.visit(resp.url)
-        self.view.render_page()
+        try:
+            resp = await self.load_page(url)
+            self.model.history.visit(resp.url)
+            self.view.render_page()
+        except ConnectionError as e:
+            statusbar_logger.info(str(e))
+            raise
 
     async def back_callback(self):
         self.model.history.go_back()
@@ -117,9 +124,15 @@ class Controller:
         self.view.render_page()
 
     async def load_page(self, url: GeminiUrl):
-        # print("Requesting", url)
+        statusbar_logger.info(f"Requesting {url}...")
         resp = await get(url)
-        # print("Received", resp)
+        statusbar_logger.info(f"{resp.status} {resp.meta}")
+
+        async def clear_status_bar_later():
+            await curio.sleep(2)
+            statusbar_logger.info("")
+
+        await curio.spawn(clear_status_bar_later(), daemon=True)
 
         if resp.status.startswith("2"):
             self.model.update_content(resp.body.decode())
