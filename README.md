@@ -49,7 +49,7 @@ poetry publish --build
 
 - [x] back-forward buttons
 - [x] handle redirects
-- [ ] separate I/O thread to avoid blocking GUI
+- [x] non-blocking I/O using curio
 - [ ] more visual indicators - maybe a status bar at the bottom
 - [x] parse gemini's advanced line types
 - [ ] properly handle mime types (gemini/plaintext/binary)
