@@ -7,6 +7,9 @@ license = "MIT"
 packages = [
     { include = "mcross", from = "src" },
 ]
+readme = "README.md"
+homepage = "https://sr.ht/~nhanb/mcross/"
+repository = "https://git.sr.ht/~nhanb/mcross"
 
 [tool.poetry.scripts]
 mcross = "mcross:run"
