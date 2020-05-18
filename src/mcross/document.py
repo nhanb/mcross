@@ -6,6 +6,7 @@ HEADING_LINE_PATTERN = re.compile(r"^(#{1,3})\s+(.+)$")
 
 
 class GeminiNode:
+    __slots__ = ("text",)
     text: str
 
     def __init__(self, text):
@@ -36,6 +37,7 @@ class H3Node(GeminiNode):
 
 
 class LinkNode(GeminiNode):
+    __slots__ = ("url", "name")
     url: str
     name: str
 

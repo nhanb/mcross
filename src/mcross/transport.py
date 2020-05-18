@@ -8,10 +8,6 @@ MAX_RESP_BODY_BYTES = 1024 * 1024 * 5
 MAX_REDIRECTS = 3
 
 
-# Wanted to use a dataclass here but ofc it doesn't allow a slotted class to
-# have fields with default values:
-# https://stackoverflow.com/questions/50180735/how-can-dataclasses-be-made-to-work-better-with-slots
-# Maaaaybe I should just use attrs and call it a day.
 class Response:
     __slots__ = ("status", "meta", "body", "url")
 
@@ -47,6 +43,7 @@ class NonAbsoluteUrlWithoutContextError(Exception):
 
 class GeminiUrl:
     PROTOCOL = "gemini"
+    __slots__ = ("host", "port", "path")
     host: str
     port: int
     path: str
