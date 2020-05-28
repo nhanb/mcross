@@ -113,6 +113,12 @@ class View:
         address_bar.bind("<KP_Enter>", self._on_go)
         address_bar.focus_set()
 
+        def on_ctrl_l(ev):
+            address_bar.focus()
+            address_bar.select_all()
+
+        root.bind("<Control-l>", on_ctrl_l)
+
         # Go button
         go_btn = ttk.Button(row1, text="三三ᕕ( ᐛ )ᕗ", command=self._on_go, width=10)
         self.go_btn = go_btn

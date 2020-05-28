@@ -28,9 +28,9 @@ class McEntry(ttk.Entry):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.bind("<Control-a>", self._on_ctrl_a)
+        self.bind("<Control-a>", self.select_all)
 
-    def _on_ctrl_a(self, ev):
+    def select_all(self, ev=None):
         self.select_range(0, "end")
         self.icursor("end")
         return "break"
