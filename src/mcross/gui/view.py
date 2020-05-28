@@ -174,8 +174,21 @@ class View:
         style.theme_use(TTK_THEME)
 
     def _on_go(self, ev=None):
+        orig_url = self.address_bar.get()
+        url = orig_url.strip()
+
+        if url.startswith("gemini://"):
+            url = url[9:]
+
+        if not url:
+            return
+
+        if url != orig_url:
+            self.address_bar.delete(0, "end")
+            self.address_bar.insert(0, url)
+
         if self.go_callback is not None:
-            self.go_callback("gemini://" + self.address_bar.get())
+            self.go_callback("gemini://" + url)
 
     def _on_link_enter(self, ev):
         if self.allow_changing_cursor:

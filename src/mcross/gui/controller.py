@@ -114,7 +114,7 @@ class Controller:
             self.model.history.visit(resp.url)
             await self.put_gui_op(self.view.render_page)
 
-        except ConnectionError as e:
+        except (ConnectionError, OSError) as e:
             await self.put_gui_op(statusbar_logger.info, str(e))
             raise
 
