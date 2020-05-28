@@ -32,9 +32,14 @@ class Controller:
         # Set up event handler for queued GUI updates
         self.root.createfilehandler(self.gui_ops, READABLE, self.process_gui_ops)
 
+        # When in the middle of an action, this flag is set to False to prevent user
+        # from clicking other random stuff:
+        self.allow_user_interaction = True
+
         def put_coro_op(func):
             def inner(*args):
-                self.coro_ops.put(self.show_waiting_cursor_during_task(func, *args))
+                if self.allow_user_interaction:
+                    self.coro_ops.put(self.show_waiting_cursor_during_task(func, *args))
 
             return inner
 
@@ -72,6 +77,7 @@ class Controller:
             self.view.allow_changing_cursor = True
 
         await show()
+        self.allow_user_interaction = False
 
         try:
             await func(*args)
@@ -79,6 +85,7 @@ class Controller:
             # a catch-all here so that our show_waiting...() coroutine can be yielded
             traceback.print_exc()
 
+        self.allow_user_interaction = True
         await hide()
 
     async def go_callback(self, url: str):
