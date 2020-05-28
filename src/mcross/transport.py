@@ -1,4 +1,5 @@
 import re
+import ssl
 from urllib.parse import urlparse
 
 import curio
@@ -100,9 +101,15 @@ class GeminiUrl:
 
 
 async def raw_get(url: GeminiUrl):
+    # TODO: actually implement TOFU for TLS!
+    # Right now it just accepts whatever
+    context = ssl.create_default_context()
+    context.check_hostname = False
+    context.verify_mode = ssl.CERT_NONE
     sock = await curio.open_connection(
-        url.host, url.port, ssl=True, server_hostname=url.host
+        url.host, url.port, ssl=context, server_hostname=url.host
     )
+
     async with sock:
         await sock.sendall(f"gemini://{url.host}{url.path}\r\n".encode())
         header = (await sock.recv(MAX_RESP_HEADER_BYTES)).decode()
