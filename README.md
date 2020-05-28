@@ -54,9 +54,9 @@ poetry publish --build
 - [x] non-blocking I/O using curio
 - [x] more visual indicators: waiting cursor, status bar
 - [x] parse gemini's advanced line types
+- [ ] TOFU TLS (right now it accepts whatever)
 - [ ] properly handle mime types (gemini/plaintext/binary)
 - [ ] configurable document styling
-- [ ] configurable TLS to accomodate self-signed sites?
 - [ ] human-friendly distribution
 
 Long term high-level goals:
