@@ -7,13 +7,19 @@ It currently looks like this:
 
 ![](https://junk.imnhan.com/mcross.png)
 
-Or check out the demo video: https://junk.imnhan.com/mcross.mp4
-
-Surfing plaintext and gemini content is already working well.
+Surfing plaintext and gemini content is already working well. The catch is it
+currently doesn't support downloading binary content and TOFU TLS verification.
 See feature checklist below for more details.
+
+See my [blog post][1] for the rationale behind this project.
 
 
 # Installation
+
+You need python 3.7 or higher. McRoss also uses `idlelib` which is supposed to
+be included in the standard library but some linux distros split it into a
+separate package which you'll need to install manually. I know at least [Ubuntu
+and Void Linux][2] do this.
 
 ```sh
 pip install mcross
@@ -25,13 +31,6 @@ Maybe it's finally time to try nuitka?
 
 
 # Development
-
-Deps:
-
-- python3.7+
-- idlelib (it's supposed to be in the standard lib but Ubuntu for example
-  splits it into a separate package)
-- curio - for async I/O so that it doesn't block the UI.
 
 To get started:
 
@@ -54,10 +53,10 @@ poetry publish --build
 - [x] non-blocking I/O using curio
 - [x] more visual indicators: waiting cursor, status bar
 - [x] parse gemini's advanced line types
-- [ ] TOFU TLS (right now it accepts whatever)
 - [ ] properly handle mime types (gemini/plaintext/binary)
 - [ ] configurable document styling
 - [ ] human-friendly distribution
+- [ ] TOFU TLS (right now it always accepts self-signed certs)
 
 Long term high-level goals:
 
@@ -94,3 +93,6 @@ respond with `53 No proxying to other hosts!`.
 
 Spec says a newline should be \r\n but the server running
 gemini.circumlunar.space just uses \n every time.
+
+[1]: https://hi.imnhan.com/posts/introducing-mcross-a-minimal-gemini-browser/
+[2]: https://todo.sr.ht/~nhanb/mcross/3
