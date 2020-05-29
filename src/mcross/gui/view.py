@@ -125,7 +125,7 @@ class View:
         go_btn.pack(side="left", pady=3)
 
         # Main viewport implemented as a Text widget.
-        text = ReadOnlyText(row2)
+        text = ReadOnlyText(row2, wrap="word")
         self.text = text
         self.render_page()
         text_font = pick_font(
