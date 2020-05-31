@@ -112,12 +112,22 @@ async def raw_get(url: GeminiUrl):
 
     async with sock:
         await sock.sendall(f"gemini://{url.host}{url.path}\r\n".encode())
-        header = (await sock.recv(MAX_RESP_HEADER_BYTES)).decode()
+        header = b""
+        remainder = b""
+        while True:
+            header += await sock.recv(4096)
+            if b"\r\n" in header:
+                idx = header.find(b"\r\n")
+                remainder = header[(idx + 2) :]
+                header = header[: (idx + 2)].decode()
+                break
+
+        # header = (await sock.recv(MAX_RESP_HEADER_BYTES)).decode()
         status, meta = _parse_resp_header(header)
         resp = Response(status=status, meta=meta, url=url)
 
         if status.startswith("2"):
-            body = b""
+            body = remainder
             msg = await sock.recv(4096)
             body += msg
             while msg and len(body) <= MAX_RESP_BODY_BYTES:
