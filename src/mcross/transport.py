@@ -91,6 +91,8 @@ class GeminiUrl:
         #   raw url text: yikes
         #   => parsed url: gemini://example.com/foo/yikes
         current_path = current_url.path[: current_url.path.rfind("/") + 1]
+        if current_path == "":
+            current_path = "/"
         return GeminiUrl(current_url.host, current_url.port, current_path + text)
 
     @staticmethod
