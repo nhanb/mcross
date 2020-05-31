@@ -1,5 +1,6 @@
 import logging
 import threading
+import time
 import traceback
 from ssl import SSLCertVerificationError
 from tkinter import READABLE, Tk, messagebox
@@ -7,6 +8,7 @@ from tkinter import READABLE, Tk, messagebox
 import curio
 
 from ..transport import (
+    MAX_REQUEST_SECONDS,
     GeminiUrl,
     NonAbsoluteUrlWithoutContextError,
     UnsupportedProtocolError,
@@ -122,6 +124,16 @@ class Controller:
             self.model.history.visit(resp.url)
             await self.put_gui_op(self.view.render_page)
 
+        except curio.errors.TaskTimeout:
+            await self.put_gui_op(
+                statusbar_logger.info, f"Request timed out: {MAX_REQUEST_SECONDS}s",
+            )
+            await self.put_gui_op(
+                messagebox.showwarning,
+                "Request timed out",
+                f"Request to {url.without_protocol()} took longer than {MAX_REQUEST_SECONDS}s",
+            )
+
         except (ConnectionError, OSError) as e:
             await self.put_gui_op(statusbar_logger.info, str(e))
             raise
@@ -138,14 +150,13 @@ class Controller:
 
     async def load_page(self, url: GeminiUrl):
         await self.put_gui_op(statusbar_logger.info, f"Requesting {url}...")
+        start = time.time()
         resp = await get(url)
-        await self.put_gui_op(statusbar_logger.info, f"{resp.status} {resp.meta}")
-
-        async def clear_status_bar_later():
-            await curio.sleep(2)
-            await self.put_gui_op(statusbar_logger.info, "")
-
-        await curio.spawn(clear_status_bar_later(), daemon=True)
+        request_time = time.time() - start
+        await self.put_gui_op(
+            statusbar_logger.info,
+            f"{resp.status} {resp.meta} (took {request_time:.2f}s)",
+        )
 
         if resp.status.startswith("2"):
             await self.put_gui_op(self.model.update_content, resp.body.decode())

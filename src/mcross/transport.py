@@ -7,6 +7,7 @@ import curio
 MAX_RESP_HEADER_BYTES = 2 + 1 + 1024 + 2  # <STATUS><whitespace><META><CR><LF>
 MAX_RESP_BODY_BYTES = 1024 * 1024 * 5
 MAX_REDIRECTS = 3
+MAX_REQUEST_SECONDS = 30
 
 
 class Response:
@@ -142,7 +143,7 @@ async def raw_get(url: GeminiUrl):
 
 
 async def get(url: GeminiUrl, redirect_count=0):
-    resp = await raw_get(url)
+    resp = await curio.timeout_after(MAX_REQUEST_SECONDS, raw_get, url)
     if resp.status.startswith("3") and redirect_count < MAX_REDIRECTS:
         redirect_count += 1
         new_url = GeminiUrl.parse_absolute_url(resp.meta)
