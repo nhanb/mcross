@@ -13,7 +13,7 @@ from ..document import (
     TextNode,
 )
 from .model import Model
-from .widgets import McEntry, ReadOnlyText
+from .widgets import AltButton, McEntry, ReadOnlyText
 
 # OS-specific values
 if sys.platform == "win32":
@@ -58,9 +58,9 @@ def register_status_bar_log_handler(status_bar: ttk.Label):
 class View:
     model: Model
     address_bar: ttk.Entry
-    go_btn: ttk.Button
-    back_btn: ttk.Button
-    forward_btn: ttk.Button
+    go_btn: AltButton
+    back_btn: AltButton
+    forward_btn: AltButton
     text: Text
     status_bar: ttk.Label
 
@@ -90,11 +90,23 @@ class View:
         register_status_bar_log_handler(status_bar)
 
         # Back/Forward buttons
-        back_btn = ttk.Button(
-            row1, text="◀", width=3, command=lambda: self.back_callback()
+        back_btn = AltButton(
+            row1,
+            text="◀",
+            width=3,
+            command=lambda: self.back_callback(),
+            root=root,
+            alt_char_index=0,
+            alt_key="Left",
         )
-        forward_btn = ttk.Button(
-            row1, text="▶", width=3, command=lambda: self.forward_callback()
+        forward_btn = AltButton(
+            row1,
+            text="▶",
+            width=3,
+            command=lambda: self.forward_callback(),
+            root=root,
+            alt_char_index=0,
+            alt_key="Right",
         )
         back_btn.pack(side="left", padx=2)
         forward_btn.pack(side="left", padx=2)
@@ -108,7 +120,7 @@ class View:
         # Address bar
         address_bar = McEntry(row1)
         self.address_bar = address_bar
-        address_bar.pack(side="left", fill="both", expand=True, padx=3, pady=3)
+        address_bar.pack(side="left", fill="both", expand=True, pady=3)
         address_bar.bind("<Return>", self._on_go)
         address_bar.bind("<KP_Enter>", self._on_go)
         address_bar.focus_set()
@@ -120,9 +132,11 @@ class View:
         root.bind("<Control-l>", on_ctrl_l)
 
         # Go button
-        go_btn = ttk.Button(row1, text="三三ᕕ( ᐛ )ᕗ", command=self._on_go, width=10)
+        go_btn = AltButton(
+            row1, text="Go", root=root, alt_char_index=0, command=self._on_go, width=5
+        )
         self.go_btn = go_btn
-        go_btn.pack(side="left", pady=3)
+        go_btn.pack(side="left", padx=2, pady=3)
 
         # Main viewport implemented as a Text widget.
         text = ReadOnlyText(row2, wrap="word")

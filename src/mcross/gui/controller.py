@@ -21,6 +21,7 @@ statusbar_logger = logging.getLogger("statusbar")
 class Controller:
     def __init__(self):
         self.root = Tk()
+        self.root.alt_shortcuts = set()
         self.model = Model()
         self.view = View(self.root, self.model)
         self.root.title("McRoss Browser")
