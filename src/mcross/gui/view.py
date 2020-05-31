@@ -71,7 +71,7 @@ class View:
     back_callback = None
     forward_callback = None
 
-    def __init__(self, root: Tk, model: Model):
+    def __init__(self, root: Tk, model: Model, fonts=(None, None)):
         self.model = model
 
         # first row - address bar + buttons
@@ -142,19 +142,34 @@ class View:
         text = ReadOnlyText(row2, wrap="word")
         self.text = text
         self.render_page()
-        text_font = pick_font(
-            [
-                "Charis SIL",
-                "Source Serif Pro",
-                "Cambria",
-                "Georgia",
-                "DejaVu Serif",
-                "Times New Roman",
-                "Times",
-                "TkTextFont",
-            ]
-        )
-        mono_font = pick_font(["Ubuntu Mono", "Consolas", "Courier", "TkFixedFont"])
+        if fonts[0] is None:
+            text_font = pick_font(
+                [
+                    "Charis SIL",
+                    "Source Serif Pro",
+                    "Cambria",
+                    "Georgia",
+                    "DejaVu Serif",
+                    "Times New Roman",
+                    "Times",
+                    "TkTextFont",
+                ]
+            )
+        else:
+            text_font = fonts[0]
+
+        if fonts[1] is None:
+            mono_font = pick_font(
+                [
+                    "Ubuntu Mono",
+                    "Consolas",
+                    "Courier",
+                    "TkFixedFont"
+                ]
+            )
+        else:
+            mono_font = fonts[1]
+
         text.config(
             font=(text_font, 13),
             bg="#fff8dc",

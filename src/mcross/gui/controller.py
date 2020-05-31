@@ -2,6 +2,7 @@ import logging
 import threading
 import time
 import traceback
+import argparse
 from ssl import SSLCertVerificationError
 from tkinter import READABLE, Tk, messagebox
 
@@ -19,13 +20,21 @@ from .view import WAITING_CURSOR, View
 
 statusbar_logger = logging.getLogger("statusbar")
 
+argparser = argparse.ArgumentParser()
+argparser.add_argument("--textfont")
+argparser.add_argument("--monofont")
+args = argparser.parse_args()
 
 class Controller:
     def __init__(self):
         self.root = Tk()
         self.root.alt_shortcuts = set()
         self.model = Model()
-        self.view = View(self.root, self.model)
+        self.view = View(
+            self.root,
+            self.model,
+            fonts=(args.textfont, args.monofont)
+        )
         self.root.title("McRoss Browser")
         self.root.geometry("800x600")
 
