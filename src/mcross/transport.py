@@ -119,11 +119,12 @@ async def raw_get(url: GeminiUrl):
             if b"\r\n" in header:
                 idx = header.find(b"\r\n")
                 remainder = header[(idx + 2) :]
-                header = header[: (idx + 2)].decode()
+                header = header[: (idx + 2)]
+                break
+            elif len(header) > MAX_RESP_HEADER_BYTES:
                 break
 
-        # header = (await sock.recv(MAX_RESP_HEADER_BYTES)).decode()
-        status, meta = _parse_resp_header(header)
+        status, meta = _parse_resp_header(header.decode())
         resp = Response(status=status, meta=meta, url=url)
 
         if status.startswith("2"):
