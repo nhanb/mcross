@@ -29,6 +29,16 @@ mcross
 Better distribution methods to be explored later.
 Maybe it's finally time to try nuitka?
 
+# Usage
+
+CLI arguments: `--textfont`, `--monofont`
+
+Keyboard shortcuts:
+
+- `Ctrl-l`: jump to address bar.
+- Hold `Alt` to see possible button shortcuts underlined. This is what Qt calls
+  [Accelerator Keys](https://doc.qt.io/qt-5/accelerators.html).
+
 
 # Development
 

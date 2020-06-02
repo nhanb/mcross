@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mcross"
-version = "0.5.11"
+version = "0.5.12"
 description = "Do you remember www?"
 authors = ["nhanb <hi@imnhan.com>"]
 license = "MIT"
