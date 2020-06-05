@@ -21,6 +21,7 @@ DEMO_TEXT = """\
 
 => relative/ Relative link
 => /relative/ Relative link starting with "/"
+=> //republic.circumlunar.space/ Absolute link with scheme omitted
 => https://lists.orbitalfox.eu/listinfo/gemini?foo=bar HTTP link
 
 ## Codes

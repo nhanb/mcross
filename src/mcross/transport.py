@@ -79,6 +79,11 @@ class GeminiUrl:
         if protocol:
             raise UnsupportedProtocolError(protocol)
 
+        # absolute url with scheme omitted
+        # for example, "//example.com/foo"
+        if text.startswith("//"):
+            return cls.parse_absolute_url("gemini:" + text)
+
         if current_url is None:
             raise NonAbsoluteUrlWithoutContextError(text)
 
