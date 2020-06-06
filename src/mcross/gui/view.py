@@ -159,14 +159,7 @@ class View:
             text_font = fonts[0]
 
         if fonts[1] is None:
-            mono_font = pick_font(
-                [
-                    "Ubuntu Mono",
-                    "Consolas",
-                    "Courier",
-                    "TkFixedFont"
-                ]
-            )
+            mono_font = pick_font(["Ubuntu Mono", "Consolas", "Courier", "TkFixedFont"])
         else:
             mono_font = fonts[1]
 

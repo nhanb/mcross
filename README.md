@@ -55,6 +55,18 @@ mcross
 poetry publish --build
 ```
 
+There are 2 McRoss-related mailing lists:
+
+- [~nhanb/mcross-devel](https://lists.sr.ht/~nhanb/mcross-devel): discuss and
+  submit your patches here
+- [~nhanb/mcross-announce](https://lists.sr.ht/~nhanb/mcross-announce):
+  low-volume announcement-only list
+
+If you're not familiar with the mailing list workflow, check out
+[git-send-email.io][3] and [mailing list etiquette][4]. [useplaintext.email][5]
+also has useful plaintext setup tips for various email clients, though I don't
+necessarily agree with its "plaintext or nothing" stance.
+
 
 # Feature checklist
 
@@ -106,3 +118,6 @@ gemini.circumlunar.space just uses \n every time.
 
 [1]: https://hi.imnhan.com/posts/introducing-mcross-a-minimal-gemini-browser/
 [2]: https://todo.sr.ht/~nhanb/mcross/3
+[3]: https://git-send-email.io/
+[4]: https://man.sr.ht/lists.sr.ht/etiquette.md
+[5]: https://useplaintext.email/
