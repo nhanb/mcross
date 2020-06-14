@@ -9,6 +9,7 @@ def run():
     argparser = argparse.ArgumentParser()
     argparser.add_argument("--textfont")
     argparser.add_argument("--monofont")
+    argparser.add_argument("--dark", action="store_true")
     args = argparser.parse_args()
 
     # Actually start the program

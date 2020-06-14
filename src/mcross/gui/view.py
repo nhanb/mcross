@@ -71,7 +71,7 @@ class View:
     back_callback = None
     forward_callback = None
 
-    def __init__(self, root: Tk, model: Model, fonts=(None, None)):
+    def __init__(self, root: Tk, model: Model, fonts=(None, None), dark=False):
         self.model = model
 
         # first row - address bar + buttons
@@ -165,8 +165,8 @@ class View:
 
         text.config(
             font=(text_font, 13),
-            bg="#fff8dc",
-            fg="black",
+            bg="#212121" if dark else "#fff8dc",
+            fg="#eee" if dark else "black",
             padx=5,
             pady=5,
             # hide blinking insertion cursor:
@@ -176,12 +176,12 @@ class View:
             height=1,
         )
         text.pack(side="left", fill="both", expand=True)
-        text.tag_config("link", foreground="brown")
+        text.tag_config("link", foreground="#ff8a65" if dark else "brown")
         text.tag_bind("link", "<Enter>", self._on_link_enter)
         text.tag_bind("link", "<Leave>", self._on_link_leave)
         text.tag_bind("link", "<Button-1>", self._on_link_click)
         text.tag_config("pre", font=(mono_font, 13))
-        text.tag_config("listitem", foreground="#044604")
+        text.tag_config("listitem", foreground="#64c664" if dark else "#044604")
 
         base_heading_font = font.Font(font=text["font"])
         base_heading_font.config(weight="bold")

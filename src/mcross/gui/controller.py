@@ -25,7 +25,9 @@ class Controller:
         self.root = Tk()
         self.root.alt_shortcuts = set()
         self.model = Model()
-        self.view = View(self.root, self.model, fonts=(args.textfont, args.monofont))
+        self.view = View(
+            self.root, self.model, fonts=(args.textfont, args.monofont), dark=args.dark
+        )
         self.root.title("McRoss Browser")
         self.root.geometry("800x600")
 
