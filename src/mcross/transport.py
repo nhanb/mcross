@@ -151,7 +151,7 @@ async def get(url: GeminiUrl, redirect_count=0):
     resp = await curio.timeout_after(MAX_REQUEST_SECONDS, raw_get, url)
     if resp.status.startswith("3") and redirect_count < MAX_REDIRECTS:
         redirect_count += 1
-        new_url = GeminiUrl.parse_absolute_url(resp.meta)
+        new_url = GeminiUrl.parse(resp.meta, url)
         print(f"Redirecting to {new_url}, count={redirect_count}")
         return await get(new_url, redirect_count)
     return resp
