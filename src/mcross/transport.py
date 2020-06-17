@@ -11,16 +11,20 @@ MAX_REQUEST_SECONDS = 30
 
 
 class Response:
-    __slots__ = ("status", "meta", "body", "url")
+    __slots__ = ("status", "meta", "body", "url", "mime_type", "charset")
 
-    def __init__(self, status: str, meta: str, url, body: bytes = None):
+    def __init__(
+        self, status: str, meta: str, url, mime_type, charset, body: bytes = None
+    ):
         self.status = status
         self.meta = meta
         self.body = body
         self.url = url
+        self.mime_type = mime_type
+        self.charset = charset
 
     def __repr__(self):
-        return f"Response(status={repr(self.status)}, meta={repr(self.meta)})"
+        return f"Response(status={repr(self.status)}, mime_type={repr(self.mime_type)}, charset={repr(self.charset)})"
 
 
 def _parse_resp_header(header, pattern=re.compile(r"^(\d\d)\s+(.{,1024})\r\n$")):
@@ -133,7 +137,27 @@ async def raw_get(url: GeminiUrl):
                 break
 
         status, meta = _parse_resp_header(header.decode())
-        resp = Response(status=status, meta=meta, url=url)
+
+        # If success, extract mime type & charset from meta
+        mime_type = None
+        charset = None
+        if status.startswith("2"):
+            if not meta:
+                mime_type = "text/gemini"
+                charset = "utf-8"
+            else:
+                meta_parts = meta.split(";")
+                mime_type = meta_parts[0].strip() or "text/gemini"
+                charset = ""
+                if len(meta_parts) == 2:
+                    charset_part = meta_parts[1].strip()
+                    if charset_part.startswith("charset="):
+                        charset = charset_part[len("charset=") :]
+                charset = charset or "utf-8"
+
+        resp = Response(
+            status=status, meta=meta, url=url, mime_type=mime_type, charset=charset
+        )
 
         if status.startswith("2"):
             body = remainder

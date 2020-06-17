@@ -250,7 +250,7 @@ class View:
 
     def render_viewport(self):
         self.text.delete("1.0", "end")
-        if self.model.mime_type == "text/gemini":
+        if self.model.mime_type.startswith("text/gemini"):
             for node in self.model.gemini_nodes:
                 render_node(node, self.text)
             # delete final trailing newline:
