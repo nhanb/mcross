@@ -77,15 +77,18 @@ class Model:
     plaintext = ""
     gemini_nodes = None
     history: History
+    mime_type = ""
 
     def __init__(self):
         self.history = History()
-        self.update_content(DEMO_TEXT)
+        self.update_content(DEMO_TEXT, "text/gemini")
 
-    def update_content(self, plaintext):
+    def update_content(self, plaintext, mime_type):
         self.plaintext = plaintext
+        self.mime_type = mime_type
         self.gemini_nodes = []
-        try:
-            self.gemini_nodes = document.parse(plaintext)
-        except Exception:
-            print("Invalid gemini document!")
+        if mime_type == "text/gemini":
+            try:
+                self.gemini_nodes = document.parse(plaintext)
+            except Exception:
+                print("Invalid gemini document!")

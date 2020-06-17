@@ -181,6 +181,7 @@ class View:
         text.tag_bind("link", "<Leave>", self._on_link_leave)
         text.tag_bind("link", "<Button-1>", self._on_link_click)
         text.tag_config("pre", font=(mono_font, 13))
+        text.tag_config("plaintext", font=(mono_font, 13))
         text.tag_config("listitem", foreground="#64c664" if dark else "#044604")
 
         base_heading_font = font.Font(font=text["font"])
@@ -245,15 +246,21 @@ class View:
             self.address_bar.delete(0, "end")
             self.address_bar.insert(0, current_url.without_protocol())
 
-        # Update viewport
+        self.render_viewport()
+
+    def render_viewport(self):
         self.text.delete("1.0", "end")
-        if not self.model.gemini_nodes:
-            self.text.insert("end", self.model.plaintext)
-        else:
+        if self.model.mime_type == "text/gemini":
             for node in self.model.gemini_nodes:
                 render_node(node, self.text)
             # delete final trailing newline:
             self.text.delete("insert-1c", "insert")
+        elif self.model.mime_type.startswith("text/"):
+            self.text.insert("end", self.model.plaintext, ("plaintext",))
+        else:
+            self.text.insert(
+                "end", f"Unsupported MIME type: {self.model.mime_type}", ("plaintext",)
+            )
 
 
 def render_node(node: GeminiNode, widget: Text):

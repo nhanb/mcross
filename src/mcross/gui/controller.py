@@ -161,7 +161,9 @@ class Controller:
         )
 
         if resp.status.startswith("2"):
-            await self.put_gui_op(self.model.update_content, resp.body.decode())
+            await self.put_gui_op(
+                self.model.update_content, resp.body.decode(), resp.meta
+            )
         else:
             await self.put_gui_op(
                 self.model.update_content,
@@ -172,5 +174,6 @@ class Controller:
                         resp.body.decode() if resp.body else "",
                     ]
                 ),
+                "text/plain",
             )
         return resp
