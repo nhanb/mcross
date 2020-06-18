@@ -161,21 +161,23 @@ class Controller:
         )
 
         # Support whatever encoding that python supports
-        try:
-            body_string = resp.body.decode(resp.charset)
-        except LookupError:
-            await self.put_gui_op(
-                self.model.update_content,
-                "\n".join(
-                    [
-                        "Error:",
-                        f"{resp.status} {resp.meta}",
-                        f"Unsupported charset: {resp.charset}",
-                    ]
-                ),
-                "text/plain",
-            )
-            return resp
+        body_string = ""
+        if resp.body and resp.charset:
+            try:
+                body_string = resp.body.decode(resp.charset)
+            except LookupError:
+                await self.put_gui_op(
+                    self.model.update_content,
+                    "\n".join(
+                        [
+                            "Error:",
+                            f"{resp.status} {resp.meta}",
+                            f"Unsupported charset: {resp.charset}",
+                        ]
+                    ),
+                    "text/plain",
+                )
+                return resp
 
         # Sucessfully decoded body string!
         if resp.status.startswith("2"):
@@ -185,13 +187,7 @@ class Controller:
         else:
             await self.put_gui_op(
                 self.model.update_content,
-                "\n".join(
-                    [
-                        "Error:",
-                        f"{resp.status} {resp.meta}",
-                        body_string if resp.body else "",
-                    ]
-                ),
+                f"Error:\n{resp.status} {resp.meta}\n{body_string}",
                 "text/plain",
             )
         return resp

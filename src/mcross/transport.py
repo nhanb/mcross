@@ -31,8 +31,17 @@ def _parse_resp_header(header, pattern=re.compile(r"^(\d\d)\s+(.{,1024})\r\n$"))
     match = pattern.match(header)
     assert match is not None, f"Malformed response header: {header}"
     status = match.group(1)
-    meta = match.group(2)
+    meta = match.group(2).strip()
     return status, meta
+
+
+def _parse_meta(meta, pattern=re.compile(r"^(\S+)\s*;\s*charset=(\S+)$")):
+    match = pattern.match(meta)
+    if not match:
+        return None, None
+    mime_type = match.group(1)
+    charset = match.group(2)
+    return mime_type, charset
 
 
 # TODO: GeminiUrl's context-aware parse() method probably doesn't belong
@@ -138,22 +147,9 @@ async def raw_get(url: GeminiUrl):
 
         status, meta = _parse_resp_header(header.decode())
 
-        # If success, extract mime type & charset from meta
-        mime_type = None
-        charset = None
-        if status.startswith("2"):
-            if not meta:
-                mime_type = "text/gemini"
-                charset = "utf-8"
-            else:
-                meta_parts = meta.split(";")
-                mime_type = meta_parts[0].strip() or "text/gemini"
-                charset = ""
-                if len(meta_parts) == 2:
-                    charset_part = meta_parts[1].strip()
-                    if charset_part.startswith("charset="):
-                        charset = charset_part[len("charset=") :]
-                charset = charset or "utf-8"
+        mime_type, charset = _parse_meta(meta)
+        mime_type = mime_type or "text/gemini"
+        charset = charset or "utf-8"
 
         resp = Response(
             status=status, meta=meta, url=url, mime_type=mime_type, charset=charset
