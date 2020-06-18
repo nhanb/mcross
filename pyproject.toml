@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mcross"
-version = "0.5.16"
+version = "0.5.17"
 description = "Do you remember www?"
 authors = ["nhanb <hi@imnhan.com>"]
 license = "MIT"
@@ -13,10 +13,13 @@ repository = "https://git.sr.ht/~nhanb/mcross"
 
 [tool.poetry.scripts]
 mcross = "mcross:run"
+mcross-info = "mcross:info"
 
 [tool.poetry.dependencies]
 python = "^3.7"
 curio = "^1.2"
+appdirs = "^1.4.4"
+toml = "^0.10.1"
 
 [tool.poetry.dev-dependencies]
 python-language-server = "^0.31.10"

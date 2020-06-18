@@ -1,17 +1,20 @@
-import argparse
-
-from .gui.controller import Controller
-
-
 def run():
+    from . import conf
+    from .gui.controller import Controller
 
-    # Parse CLI arguments
-    argparser = argparse.ArgumentParser()
-    argparser.add_argument("--textfont")
-    argparser.add_argument("--monofont")
-    argparser.add_argument("--dark", action="store_true")
-    args = argparser.parse_args()
+    conf.init()
 
     # Actually start the program
-    c = Controller(args)
+    c = Controller()
     c.run()
+
+
+def info():
+    from . import conf
+    from pprint import pprint
+
+    conf.init()
+
+    print("Config file:", conf.CONFIG_FILE)
+    print("Config:")
+    pprint(conf._conf)

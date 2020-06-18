@@ -31,7 +31,22 @@ Maybe it's finally time to try nuitka?
 
 # Usage
 
-CLI arguments: `--textfont`, `--monofont`
+Run `mcross -h` to get a full list of CLI arguments. The same arguments can
+also be defined in a TOML config file: run `mcross-info` to know where this
+file should be for your OS. For example, running mcross like this:
+
+```sh
+mcross --background-color pink -t "Ubuntu"
+```
+
+is the same as putting this in `$HOME/.config/mcross/mcross.toml` for linux:
+
+```toml
+background-color = "pink"
+text-font = "Ubuntu"
+```
+
+The priority is CLI arg > config file > default.
 
 Keyboard shortcuts:
 
@@ -75,8 +90,9 @@ necessarily agree with its "plaintext or nothing" stance.
 - [x] non-blocking I/O using curio
 - [x] more visual indicators: waiting cursor, status bar
 - [x] parse gemini's advanced line types
-- [ ] properly handle mime types (gemini/plaintext/binary)
-- [ ] configurable document styling
+- [x] render `text/*` mime types with correct charset
+- [ ] handle `binary/*` mime types
+- [x] configurable document styling
 - [ ] human-friendly distribution
 - [ ] TOFU TLS (right now it always accepts self-signed certs)
 
