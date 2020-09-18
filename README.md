@@ -132,8 +132,15 @@ respond with `53 No proxying to other hosts!`.
 Spec says a newline should be \r\n but the server running
 gemini.circumlunar.space just uses \n every time.
 
+# Forks
+
+McRoss development is... conservative and slow. If that bothers you, check out
+[picross][6] which is a nice fork with more features (TOFU, tabs, among other
+things).
+
 [1]: https://hi.imnhan.com/posts/introducing-mcross-a-minimal-gemini-browser/
 [2]: https://todo.sr.ht/~nhanb/mcross/3
 [3]: https://git-send-email.io/
 [4]: https://man.sr.ht/lists.sr.ht/etiquette.md
 [5]: https://useplaintext.email/
+[6]: https://git.sr.ht/~fkfd/picross
