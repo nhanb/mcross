@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "mcross"
-version = "0.5.17"
+version = "0.5.18"
 description = "Do you remember www?"
 authors = ["nhanb <hi@imnhan.com>"]
-license = "MIT"
+license = "AGPL-3.0-only"
 packages = [
     { include = "mcross", from = "src" },
 ]
