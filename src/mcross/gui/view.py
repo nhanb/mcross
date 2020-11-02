@@ -3,16 +3,8 @@ import sys
 from tkinter import Text, Tk, font, ttk
 
 from .. import conf
-from ..document import (
-    GeminiNode,
-    H1Node,
-    H2Node,
-    H3Node,
-    LinkNode,
-    ListItemNode,
-    PreformattedNode,
-    TextNode,
-)
+from ..document import (GeminiNode, H1Node, H2Node, H3Node, LinkNode,
+                        ListItemNode, PreformattedNode, TextNode)
 from .model import Model
 from .widgets import AltButton, McEntry, ReadOnlyText
 
@@ -271,7 +263,7 @@ def render_node(node: GeminiNode, widget: Text):
         if node.name:
             widget.insert("end", f" {node.name}")
     elif nodetype is PreformattedNode:
-        widget.insert("end", f"```\n{node.text}\n```", ("pre",))
+        widget.insert("end", f"```{node.alt}\n{node.text}\n```", ("pre",))
     elif nodetype is ListItemNode:
         widget.insert("end", node.text, ("listitem",))
     elif nodetype is H1Node:

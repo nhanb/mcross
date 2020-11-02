@@ -54,7 +54,13 @@ class LinkNode(GeminiNode):
 
 
 class PreformattedNode(GeminiNode):
-    pass
+    __slots__ = ("alt", "text")
+    alt: str
+    text: str
+
+    def __init__(self, alt, text):
+        self.alt = alt
+        self.text = text
 
 
 def parse(text):
@@ -66,18 +72,21 @@ def parse(text):
 
     for line in text.strip().split(NEWLINE):
 
-        if line == "```":
+        if line.startswith("```"):
             if preformatted is None:
                 # start preformatted mode
-                preformatted = ""
+                preformatted = {"alt": line[3:], "text": ""}
             else:
-                nodes.append(PreformattedNode(preformatted))
+                # maybe FIXME: in case a closing ``` has trailing text, that text
+                # will be thrown away. Who cares since that would probably
+                # mean malformed gemini anyway.
+                nodes.append(PreformattedNode(**preformatted))
                 preformatted = None
 
         elif preformatted is not None:
-            if len(preformatted) > 0:
-                preformatted += "\n"
-            preformatted += line
+            if len(preformatted["text"]) > 0:
+                preformatted["text"] += "\n"
+            preformatted["text"] += line
 
         elif line.startswith("=> "):
             match = LINK_LINE_PATTERN.match(line)
