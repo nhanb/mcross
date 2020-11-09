@@ -16,15 +16,34 @@ See my [blog post][1] for the rationale behind this project.
 
 # Installation
 
-You need python 3.7 or higher. McRoss also uses `idlelib` which is supposed to
-be included in the standard library but some linux distros split it into a
-separate package which you'll need to install manually. I know at least [Ubuntu
-and Void Linux][2] do this.
+Dependencies are:
+
++ python3.7+
++ tkinter
++ idlelib
+
+`idlelib` is supposed to be included in the standard library but some linux
+distros split it into a separate package which you'll need to install manually.
+I know at least [Ubuntu and Void Linux][2] do this.
+
+## On Ubuntu:
 
 ```sh
-pip install mcross
+sudo apt install python3 python3-pip python3-tk idle3
+pip3 install --user mcross
+# make sure ~/.local/bin is in $PATH first of course
 mcross
 ```
+
+## On Arch:
+
+```sh
+sudo pacman -S python tk
+pip install --user mcross
+```
+
+Also consider using [pipx](https://github.com/pipxproject/pipx) for a cleaner,
+better isolated installation.
 
 Better distribution methods to be explored later.
 Maybe it's finally time to try nuitka?
