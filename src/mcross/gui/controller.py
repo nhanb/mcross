@@ -7,13 +7,9 @@ from tkinter import READABLE, Tk, messagebox
 
 import curio
 
-from ..transport import (
-    MAX_REQUEST_SECONDS,
-    GeminiUrl,
-    NonAbsoluteUrlWithoutContextError,
-    UnsupportedProtocolError,
-    get,
-)
+from ..transport import (MAX_REQUEST_SECONDS, GeminiUrl,
+                         NonAbsoluteUrlWithoutContextError,
+                         UnsupportedProtocolError, get)
 from .model import Model
 from .view import WAITING_CURSOR, View
 
@@ -32,9 +28,6 @@ class Controller:
         self.gui_ops = curio.UniversalQueue(withfd=True)
         self.coro_ops = curio.UniversalQueue()
 
-        # Set up event handler for queued GUI updates
-        self.root.createfilehandler(self.gui_ops, READABLE, self.process_gui_ops)
-
         # When in the middle of an action, this flag is set to False to prevent user
         # from clicking other random stuff:
         self.allow_user_interaction = True
@@ -45,6 +38,20 @@ class Controller:
                     self.coro_ops.put(self.show_waiting_cursor_during_task(func, *args))
 
             return inner
+
+        # Make sure queued GUI operations are executed as soon as they become available
+        if hasattr(self.root, "createfilehandler"):
+            self.root.createfilehandler(self.gui_ops, READABLE, self.process_gui_ops)
+        else:
+            print("Running poll-based workaround for Windows.")
+            # This is way more inefficient (5% CPU usage on a Surface Go at idle) but
+            # hey it's better than not working at all!
+
+            def after_cb():
+                self.process_gui_ops()
+                self.root.after(10, after_cb)
+
+            self.root.after(10, after_cb)
 
         self.view.go_callback = put_coro_op(self.go_callback)
         self.view.link_click_callback = put_coro_op(self.link_click_callback)
@@ -63,7 +70,7 @@ class Controller:
     async def put_gui_op(self, func, *args, **kwargs):
         await self.gui_ops.put((func, args, kwargs))
 
-    def process_gui_ops(self, file, mask):
+    def process_gui_ops(self, *args):
         while not self.gui_ops.empty():
             func, args, kwargs = self.gui_ops.get()
             func(*args, **kwargs)
@@ -126,7 +133,8 @@ class Controller:
 
         except curio.errors.TaskTimeout:
             await self.put_gui_op(
-                statusbar_logger.info, f"Request timed out: {MAX_REQUEST_SECONDS}s",
+                statusbar_logger.info,
+                f"Request timed out: {MAX_REQUEST_SECONDS}s",
             )
             await self.put_gui_op(
                 messagebox.showwarning,

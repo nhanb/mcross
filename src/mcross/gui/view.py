@@ -11,7 +11,7 @@ from .widgets import AltButton, McEntry, ReadOnlyText
 # OS-specific values
 if sys.platform == "win32":
     TTK_THEME = "vista"
-    POINTER_CURSOR = "center_ptr"
+    POINTER_CURSOR = "hand2"
     WAITING_CURSOR = "wait"
 elif sys.platform == "darwin":
     TTK_THEME = "aqua"

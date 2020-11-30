@@ -1,7 +1,7 @@
 McRoss is a minimal and usable [gemini://](https://gemini.circumlunar.space/)
-browser written in python and tkinter. I use it on Linux but it should work on
-other Unix-likes without trouble. Windows isn't supported until I can find an
-alternative to tkinter's [createfilehandler()][7].
+browser written in python and tkinter, meaning it Just Works (tm) on any
+self-respecting desktop OS. I use and test it on Linux & Windows, but it should
+also run fine on macOS or any of the BSDs.
 
 It currently looks like this:
 
@@ -168,9 +168,9 @@ this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Forks
 
-McRoss development is... conservative and slow. If that bothers you, check out
-[picross][6] which is a nice fork with more features (TOFU, tabs, among other
-things).
+McRoss development is... conservative and sporadic.
+If that bothers you, check out [picross][6] which is a nice fork with more
+features (TOFU, tabs, among other things).
 
 [1]: https://hi.imnhan.com/posts/introducing-mcross-a-minimal-gemini-browser/
 [2]: https://todo.sr.ht/~nhanb/mcross/3
