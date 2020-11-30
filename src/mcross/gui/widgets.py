@@ -1,5 +1,6 @@
-from idlelib.redirector import WidgetRedirector
 from tkinter import Text, ttk
+
+from idlelib.redirector import WidgetRedirector
 
 
 # Can't just use a Text widget with state='disabled' because that would

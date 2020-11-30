@@ -10,8 +10,9 @@ def run():
 
 
 def info():
-    from . import conf
     from pprint import pprint
+
+    from . import conf
 
     conf.init()
 

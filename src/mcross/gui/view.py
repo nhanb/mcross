@@ -3,8 +3,16 @@ import sys
 from tkinter import Text, Tk, font, ttk
 
 from .. import conf
-from ..document import (GeminiNode, H1Node, H2Node, H3Node, LinkNode,
-                        ListItemNode, PreformattedNode, TextNode)
+from ..document import (
+    GeminiNode,
+    H1Node,
+    H2Node,
+    H3Node,
+    LinkNode,
+    ListItemNode,
+    PreformattedNode,
+    TextNode,
+)
 from .model import Model
 from .widgets import AltButton, McEntry, ReadOnlyText
 

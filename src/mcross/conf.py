@@ -60,7 +60,9 @@ def parse_conf_args():
     argparser = argparse.ArgumentParser()
     for confdef in conf_definitions:
         argparser.add_argument(
-            f"-{confdef.short_name}", f"--{confdef.name}", type=confdef.type,
+            f"-{confdef.short_name}",
+            f"--{confdef.name}",
+            type=confdef.type,
         )
     args = argparser.parse_args()
     return {key.replace("_", "-"): val for key, val in vars(args).items() if val}

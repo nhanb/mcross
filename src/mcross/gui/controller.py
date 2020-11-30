@@ -7,9 +7,13 @@ from tkinter import READABLE, Tk, messagebox
 
 import curio
 
-from ..transport import (MAX_REQUEST_SECONDS, GeminiUrl,
-                         NonAbsoluteUrlWithoutContextError,
-                         UnsupportedProtocolError, get)
+from ..transport import (
+    MAX_REQUEST_SECONDS,
+    GeminiUrl,
+    NonAbsoluteUrlWithoutContextError,
+    UnsupportedProtocolError,
+    get,
+)
 from .model import Model
 from .view import WAITING_CURSOR, View
 
